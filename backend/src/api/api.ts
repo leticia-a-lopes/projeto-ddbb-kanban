@@ -80,18 +80,18 @@ app.put("/cards/:id", async (req, res) => {
   res.json({ mensagem: "Card atualizado com sucesso!" });
 });
 
-app.delete("/cards/:id", (req,res) =>{
-    const id = Number(req.params.id);
-    const antes = cards.length;
-    cards = cards.filter(i => i.id !== id);
+app.delete("/cards/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const antes = cards.length;
+  cards = cards.filter((i) => i.id !== id);
 
-    if (antes == cards.length){
-        return res.status(404).json({erro: "Card não encontrado"})
-    }
+  if (antes == cards.length) {
+    return res.status(404).json({ erro: "Card não encontrado" });
+  }
 
-    res.json({mensagem:"Card removido"})
-})
+  res.json({ mensagem: "Card removido" });
+});
 
 app.listen(3000, () => {
-    console.log("API está rodando em http://localhost:3000")
-})
+  console.log("API está rodando em http://localhost:3000");
+});
