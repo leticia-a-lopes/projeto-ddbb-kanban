@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 async function getConnection() {
   //verifica se ja existe conecçao com o BD
   if (mongoose.connection.readyState == 1) {
-    console.log("Ja esta conectado");
     return;
   }
 
