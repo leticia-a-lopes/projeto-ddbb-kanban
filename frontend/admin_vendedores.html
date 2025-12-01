@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gerenciar Usuários</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/layout.css">
+        <link rel="stylesheet" href="css/components.css">
+        <link rel="stylesheet" href="css/colors.css">
+        <link rel="stylesheet" href="css/base.css">
+    </head>
+
+    <body>
+        <header class="app-header"></header>
+
+        <main class="admin-wrapper">
+
+            <a href="quadro_principal.html" class="btn-voltar-flutuante">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(90deg); margin-right: 8px;">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                Voltar
+            </a>
+
+            <div class="card-compacto" style="margin-top: 0;">
+
+                <h2 style="margin: 0 0 20px 0; font-size: 20px; color: var(--preto-texto); text-align: center;">
+                    Administração</h2>
+
+                <div class="admin-tabs">
+                    <button class="tab-btn active" onclick="switchTab('lista')">Usuários Atuais</button>
+                    <button class="tab-btn" onclick="switchTab('criar')">Criar Usuário</button>
+                </div>
+
+                <div id="tab-lista" class="tab-content active">
+                    <div class="lista-compacta">
+
+                        <div class="usuario-item" style="position: relative;">
+                            <div class="usuario-info">
+                                <div class="avatar-wrapper">
+                                    <button class="avatar-btn-small bg-roxo" id="btn-user1"
+                                        onclick="toggleGrid('user1')">
+                                        <svg viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                        </svg>
+                                    </button>
+                                    <div class="avatar-grid-list hidden" id="grid-user1">
+                                        <div class="avatar-option bg-azul" onclick="mudarCor('user1', 'bg-azul')"></div>
+                                        <div class="avatar-option bg-roxo" onclick="mudarCor('user1', 'bg-roxo')"></div>
+                                        <div class="avatar-option bg-amarelo" onclick="mudarCor('user1', 'bg-amarelo')">
+                                        </div>
+                                        <div class="avatar-option bg-verde" onclick="mudarCor('user1', 'bg-verde')">
+                                        </div>
+                                        <div class="avatar-option bg-vermelho"
+                                            onclick="mudarCor('user1', 'bg-vermelho')"></div>
+                                        <div class="avatar-option bg-laranja" onclick="mudarCor('user1', 'bg-laranja')">
+                                        </div>
+                                        <div class="avatar-option bg-turquesa"
+                                            onclick="mudarCor('user1', 'bg-turquesa')"></div>
+                                        <div class="avatar-option bg-rosa" onclick="mudarCor('user1', 'bg-rosa')"></div>
+                                        <div class="avatar-option bg-escuro" onclick="mudarCor('user1', 'bg-escuro')">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="textos-usuario">
+                                    <span class="nome-lista">Maria Clara Santos</span>
+                                    <span class="usuario-email">mariaclara@email.com</span>
+                                </div>
+                            </div>
+                            <button class="btn-trash" style="width: 35px; height: 35px; border-radius: 50%;"
+                                onclick="confirmarExclusao()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path
+                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="usuario-item" style="position: relative;">
+                            <div class="usuario-info">
+                                <div class="avatar-wrapper">
+                                    <button class="avatar-btn-small bg-azul" id="btn-user2"
+                                        onclick="toggleGrid('user2')">
+                                        <svg viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                        </svg>
+                                    </button>
+                                    <div class="avatar-grid-list hidden" id="grid-user2">
+                                        <div class="avatar-option bg-azul" onclick="mudarCor('user2', 'bg-azul')"></div>
+                                        <div class="avatar-option bg-roxo" onclick="mudarCor('user2', 'bg-roxo')"></div>
+                                        <div class="avatar-option bg-amarelo" onclick="mudarCor('user2', 'bg-amarelo')">
+                                        </div>
+                                        <div class="avatar-option bg-verde" onclick="mudarCor('user2', 'bg-verde')">
+                                        </div>
+                                        <div class="avatar-option bg-vermelho"
+                                            onclick="mudarCor('user2', 'bg-vermelho')"></div>
+                                        <div class="avatar-option bg-laranja" onclick="mudarCor('user2', 'bg-laranja')">
+                                        </div>
+                                        <div class="avatar-option bg-turquesa"
+                                            onclick="mudarCor('user2', 'bg-turquesa')"></div>
+                                        <div class="avatar-option bg-rosa" onclick="mudarCor('user2', 'bg-rosa')"></div>
+                                        <div class="avatar-option bg-escuro" onclick="mudarCor('user2', 'bg-escuro')">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="textos-usuario">
+                                    <span class="nome-lista">João Pedro</span>
+                                    <span class="usuario-email">joao.pedro@email.com</span>
+                                </div>
+                            </div>
+                            <button class="btn-trash" style="width: 35px; height: 35px; border-radius: 50%;"
+                                onclick="confirmarExclusao()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path
+                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="tab-criar" class="tab-content">
+                    <form>
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label>Nome</label>
+                            <input type="text" class="input-field">
+                        </div>
+
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label>E-mail</label>
+                            <input type="email" class="input-field">
+                        </div>
+
+                        <div class="input-group" style="margin-bottom: 25px;">
+                            <label>Senha Provisória</label>
+                            <input type="password" class="input-field">
+                        </div>
+
+                        <button type="button" class="btn-padrao btn-azul btn-largo"
+                            onclick="alert('Usuário Criado!')">Cadastrar</button>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+
+        <script src="js/global.js"></script>
+        <script src="js/admin_vendedores.js"></script>
+
+    </body>
+
+</html>

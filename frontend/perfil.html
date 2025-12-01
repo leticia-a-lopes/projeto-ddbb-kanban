@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Perfil</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/layout.css">
+        <link rel="stylesheet" href="css/components.css">
+        <link rel="stylesheet" href="css/colors.css">
+        <link rel="stylesheet" href="css/base.css">
+        <style>
+            .profile-wrapper {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 40px;
+                min-height: 80vh;
+            }
+
+            .profile-header-info {
+                display: flex;
+                align-items: center;
+                margin-bottom: 25px;
+                width: 100%;
+            }
+
+            .profile-texts h2 {
+                font-size: 18px;
+                font-weight: 500;
+                color: var(--preto-texto);
+                margin: 0;
+            }
+
+            .profile-texts p {
+                font-size: 14px;
+                font-weight: 400;
+                color: var(--cinza-escuro);
+                margin: 2px 0 0 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header class="app-header"></header>
+
+        <main class="profile-wrapper">
+
+            <a href="quadro_principal.html" class="btn-voltar-flutuante">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(90deg); margin-right: 8px;">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                Voltar
+            </a>
+
+            <div class="card-compacto" style="margin-top: 0;">
+                <div class="profile-header-info">
+
+                    <div class="profile-avatar-large">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                    </div>
+
+                    <div class="profile-texts">
+                        <h2>Maria Clara Santos</h2>
+                        <p>mariaclara@email.com</p>
+                    </div>
+                </div>
+
+                <form id="form-perfil">
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label>Nome Completo</label>
+                        <input type="text" class="input-field" value="Maria Clara Santos" disabled>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label>E-mail</label>
+                        <input type="email" class="input-field" value="mariaclara@email.com" disabled>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 25px;">
+                        <label>Telefone</label>
+                        <input type="tel" class="input-field" value="(00) 00000-0000" disabled>
+                    </div>
+
+                    <div class="botoes-row">
+                        <button type="button" class="btn-padrao btn-outline">Alterar Senha</button>
+
+                        <button type="button" class="btn-padrao btn-azul btn-metade" id="btn-editar"
+                            onclick="habilitarEdicao()">Editar</button>
+
+                        <button type="button" class="btn-padrao btn-azul btn-metade hidden" id="btn-salvar"
+                            onclick="salvarEdicao()">Salvar</button>
+                    </div>
+
+                </form>
+            </div>
+        </main>
+
+        <script src="js/global.js"></script>
+        <script src="js/perfil.js"></script>
+
+    </body>
+
+</html>
