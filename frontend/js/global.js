@@ -1,0 +1,99 @@
+function carregarHeader() {
+    const headerHTML = `
+        <div class="logo-area" onclick="window.location.href='quadro_principal.html'" style="cursor: pointer;">
+            DDBB Cursos
+        </div>
+
+        <div class="profile-area" onclick="toggleProfileMenu()">
+            <div class="profile-icon-svg">
+                <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#E0E0E0" />
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M12 4C14.2091 4 16 5.79086 16 8C16 10.2091 14.2091 12 12 12C9.79086 12 8 10.2091 8 8C8 5.79086 9.79086 4 12 4ZM12 14C16.4183 14 20 17.5817 20 22H4C4 17.5817 7.58172 14 12 14Z"
+                        fill="#757575" />
+                </svg>
+            </div>
+
+            <div class="profile-dropdown-menu" id="profileMenu">
+                <a href="perfil.html">Meu Perfil</a>
+                <a href="admin_vendedores.html">Gerenciar Usuários</a>
+                <a href="login.html" style="color: #FF6B6B;">Sair</a>
+            </div>
+        </div>
+    `;
+
+    const headerElement = document.querySelector('.app-header');
+    if (headerElement) {
+        headerElement.innerHTML = headerHTML;
+    }
+}
+
+// lógica do Dropdown (global)
+function toggleProfileMenu() {
+    const menu = document.getElementById("profileMenu");
+    if (menu) menu.classList.toggle("show");
+}
+
+// fecha o menu se clicar fora (global)
+window.addEventListener('click', function(event) {
+    if (!event.target.closest('.profile-area')) {
+        const menu = document.getElementById("profileMenu");
+        if (menu && menu.classList.contains('show')) {
+            menu.classList.remove('show');
+        }
+    }
+});
+
+// executa assim que a página carregar
+document.addEventListener('DOMContentLoaded', carregarHeader);
+
+function adicionarCard(colunaId, nome, corIcone, responsavel, data = null, hora = null) {
+    const coluna = document.getElementById(colunaId);
+
+    const userIconHTML = `
+        <div class="card-user-icon ${corIcone}" data-tooltip="${responsavel}">
+            <svg><use href="#icon-user"></use></svg>
+        </div>
+    `;
+
+    let html = '';
+
+    if (!data) {
+        // TIPO 1: em contato
+        html = `
+            <div class="card-aluno" onclick="abrirEditar(false)">
+                <div class="card-header">
+                    <svg class="card-icon"><use href="#icon-3dots"></use></svg>
+                    <div class="name-icon-row">
+                        <span class="card-nome" style="margin: 0;">${nome}</span>
+                        ${userIconHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // TIPO 2: agendado
+        html = `
+            <div class="card-aluno" onclick="abrirEditar(true)">
+                <div class="card-header">
+                    <svg class="card-icon"><use href="#icon-3dots"></use></svg>
+                    <span class="card-nome">${nome}</span>
+                </div>
+                <div class="card-footer-tags">
+                    <div class="card-tags-container">
+                        <div class="card-tag">
+                            <svg><use href="#icon-calendar"></use></svg><span>${data}</span>
+                        </div>
+                        <div class="card-tag tag-time">
+                            <svg><use href="#icon-clock"></use></svg><span>${hora}</span>
+                        </div>
+                    </div>
+                    ${userIconHTML}
+                </div>
+            </div>
+        `;
+    }
+
+    coluna.innerHTML += html;
+}
+
