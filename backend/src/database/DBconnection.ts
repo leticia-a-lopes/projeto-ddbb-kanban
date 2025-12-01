@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config({ quiet: true });
 
 async function getConnection() {
   //verifica se ja existe conecçao com o BD
@@ -7,9 +10,7 @@ async function getConnection() {
   }
 
   await mongoose
-    .connect(
-      "mongodb+srv://Lucas:1234@cluster1.j1wz4fy.mongodb.net/?appName=Cluster1"
-    )
+    .connect(String(process.env.DB_URL))
     .then(() => {
       console.log("Conectado com sucesso!");
     })
