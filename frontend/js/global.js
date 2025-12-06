@@ -22,7 +22,7 @@ function carregarHeader() {
         </div>
     `;
 
-    const headerElement = document.querySelector('.app-header');
+    const headerElement = document.querySelector(".app-header");
     if (headerElement) {
         headerElement.innerHTML = headerHTML;
     }
@@ -35,37 +35,51 @@ function toggleProfileMenu() {
 }
 
 // fecha o menu se clicar fora (global)
-window.addEventListener('click', function(event) {
-    if (!event.target.closest('.profile-area')) {
+window.addEventListener("click", function (event) {
+    if (!event.target.closest(".profile-area")) {
         const menu = document.getElementById("profileMenu");
-        if (menu && menu.classList.contains('show')) {
-            menu.classList.remove('show');
+        if (menu && menu.classList.contains("show")) {
+            menu.classList.remove("show");
         }
     }
 });
 
 // executa assim que a página carregar
-document.addEventListener('DOMContentLoaded', carregarHeader);
+document.addEventListener("DOMContentLoaded", carregarHeader);
 
-function adicionarCard(colunaId, nome, corIcone, responsavel, data = null, hora = null) {
+function adicionarCard(
+    colunaId,
+    nomeCliente,
+    idCliente,
+    nomeUsuario,
+    idUsuario,
+    corIconeUsuario,
+    data = null,
+    hora = null
+) {
+    // Não use HTML id=idCliente ou idUsuario, visto que podem ter o mesmo valor (id pode ser 1 na tabela de cliente e usuario e id no html deve ser único).
+    // Podemos usar id="cliente-${id}", mas isso dificulta retornar o id para o backend, seria necessário fazer strip da da parte numerica toda vez.
+    // Portanto, usaremos um atributo data-id-cliente/data-id-usuario, desse modo pegamos o melhor dos dois mundos.
+    // Ref: https://www.reddit.com/r/webdev/comments/1lo3deu/html_identifiers_for_dynamic_data/
+
     const coluna = document.getElementById(colunaId);
 
     const userIconHTML = `
-        <div class="card-user-icon ${corIcone}" data-tooltip="${responsavel}">
+        <div class="card-user-icon bg-azul" data-tooltip="${nomeUsuario}" data-id-usuario="${idUsuario}">
             <svg><use href="#icon-user"></use></svg>
         </div>
     `;
 
-    let html = '';
+    let html = "";
 
     if (!data) {
         // TIPO 1: em contato
         html = `
-            <div class="card-aluno" onclick="abrirEditar(false)">
+            <div class="card-aluno" data-id-cliente="${idCliente}" onclick="abrirEditar(false)">
                 <div class="card-header">
                     <svg class="card-icon"><use href="#icon-3dots"></use></svg>
                     <div class="name-icon-row">
-                        <span class="card-nome" style="margin: 0;">${nome}</span>
+                        <span class="card-nome" style="margin: 0;">${nomeCliente}</span>
                         ${userIconHTML}
                     </div>
                 </div>
@@ -74,10 +88,10 @@ function adicionarCard(colunaId, nome, corIcone, responsavel, data = null, hora 
     } else {
         // TIPO 2: agendado
         html = `
-            <div class="card-aluno" onclick="abrirEditar(true)">
+            <div class="card-aluno" data-id-cliente="${idCliente}" onclick="abrirEditar(true)">
                 <div class="card-header">
                     <svg class="card-icon"><use href="#icon-3dots"></use></svg>
-                    <span class="card-nome">${nome}</span>
+                    <span class="card-nome">${nomeCliente}</span>
                 </div>
                 <div class="card-footer-tags">
                     <div class="card-tags-container">
@@ -97,3 +111,29 @@ function adicionarCard(colunaId, nome, corIcone, responsavel, data = null, hora 
     coluna.innerHTML += html;
 }
 
+async function popularQuadros() {
+    try {
+        const response = await fetch("http://localhost:3000/cards");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        // Provisório, necessário criação de novos campos na api e bd (caso for implementar histórico para etapa em arquivados).
+        // TODO: substituir "lista-contato" por cliente.status, "Clara Maria" por usuario.nome e "red" por usuario.color
+        for (const cliente of data) {
+            adicionarCard(
+                "lista-contato",
+                cliente.nome,
+                cliente.id,
+                "Clara Maria",
+                Math.floor(Math.random() * 100),
+                "red"
+            );
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", popularQuadros());
