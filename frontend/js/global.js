@@ -131,9 +131,47 @@ async function popularQuadros() {
                 "red"
             );
         }
+        adicionarDragDrop();
     } catch (error) {
         console.error("Fetch error:", error);
     }
+}
+
+// Ref: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Kanban_board, https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/setData e https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/getData
+function adicionarDragDrop() {
+    cards = document.querySelectorAll(".card-aluno");
+    cardsLists = document.querySelectorAll(".kanban-column");
+
+    // Draggable para todos cards
+    cards.forEach((card) => {
+        card.setAttribute("draggable", "true");
+
+        card.addEventListener("dragstart", (event) => {
+            // Pemitir ação de apenas de mover o item
+            event.dataTransfer.effectAllowed = "move";
+
+            // Armazena o id do cliente no event no formato "text/plain"
+            event.dataTransfer.setData("text/plain", card.dataset.idCliente);
+        });
+    });
+
+    cardsLists.forEach((list) => {
+        list.addEventListener("dragover", (event) => {
+            event.preventDefault();
+        });
+
+        list.addEventListener("drop", (event) => {
+            event.preventDefault();
+
+            // Recupera os dados que estavam no evento (data-id-cliente)
+            const cardIdCliente = event.dataTransfer.getData("text/plain");
+            const cardElement = document.querySelector(
+                `[data-id-cliente="${cardIdCliente}"]`
+            );
+
+            list.appendChild(cardElement);
+        });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", popularQuadros());
