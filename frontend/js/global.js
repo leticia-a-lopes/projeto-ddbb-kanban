@@ -131,9 +131,162 @@ async function popularQuadros() {
                 "red"
             );
         }
+        adicionarDragDrop();
     } catch (error) {
         console.error("Fetch error:", error);
     }
+}
+
+// Ref: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Kanban_board
+// Idealmente, utilizariamos o objeto dataTransfer, mas ele não é acessível no dragover: https://issues.chromium.org/issues/40617527
+
+let activeDragCardId = null;
+
+// TODO: Integrar com endpoint de mudança de status
+function adicionarDragDrop() {
+    cards = document.querySelectorAll(".card-aluno[data-id-cliente]");
+    columns = document.querySelectorAll(".kanban-column");
+
+    cards.forEach((card) => {
+        card.setAttribute("draggable", "true");
+
+        // Armazena ID para uso no drop
+        card.addEventListener("dragstart", (event) => {
+            if (
+                !card.hasAttribute("data-id-cliente") ||
+                !card.dataset.idCliente
+            ) {
+                console.error(
+                    "Drag card: card não possui [data-id-cliente] válido:",
+                    card
+                );
+                return;
+            }
+            card.classList.add("dragging");
+            event.dataTransfer.effectAllowed = "move";
+
+            event.dataTransfer.setData("card-aluno", "");
+            activeDragCardId = card.dataset.idCliente;
+        });
+
+        // Limpa ID armazenado após a ação de arrastar terminar
+        card.addEventListener("dragend", () => {
+            activeDragCardId = null;
+            card.classList.remove("dragging");
+        });
+    });
+
+    columns.forEach((column) => {
+        column.addEventListener("dragover", moveDragPlaceholder);
+
+        // Remove o placeholder quando o card sair da área
+        column.addEventListener("dragleave", (event) => {
+            if (column.contains(event.relatedTarget)) {
+                return;
+            }
+
+            const dragPlaceholder = column.querySelector(".drag-placeholder");
+            dragPlaceholder?.remove();
+        });
+
+        // Insere card na área de drop (inserimos ele acima do placeholder e logo em seguida removemos o placeholder)
+        column.addEventListener("drop", (event) => {
+            event.preventDefault();
+
+            const draggedCard = document.querySelector(
+                `[data-id-cliente="${activeDragCardId}"]`
+            );
+
+            const dragPlaceholder = column.querySelector(".drag-placeholder");
+            if (!dragPlaceholder) return;
+            draggedCard.remove();
+            cardList = column.querySelector(".card-list");
+            cardList.insertBefore(draggedCard, dragPlaceholder);
+            dragPlaceholder.remove();
+        });
+    });
+}
+
+// Cria o elemento placeholder de acordo com o tamanho do card
+function makeDragPlaceholder(draggedCard) {
+    const dragPlaceholder = document.createElement("div");
+    dragPlaceholder.classList.add("drag-placeholder");
+    dragPlaceholder.style.height = `${draggedCard.offsetHeight}px`;
+    return dragPlaceholder;
+}
+
+// Decide onde colocar o placeholder
+function moveDragPlaceholder(event) {
+    // Verifica se estamos lidando com o elemento correto (isso foi definido antes em dragstart)
+    if (!event.dataTransfer.types.includes("card-aluno")) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const draggedCard = document.querySelector(
+        `[data-id-cliente="${activeDragCardId}"]`
+    );
+
+    if (!draggedCard) {
+        console.error(
+            `Drag card: Não foi possível encontrar card com ID "${activeDragCardId}"`
+        );
+        return;
+    }
+
+    const column = event.currentTarget;
+    const cardList = column.querySelector(".card-list");
+
+    if (!cardList) {
+        console.error(
+            `Drag card: Não foi possível achar elemento .card-list na coluna "${column}"`
+        );
+        return;
+    }
+
+    const existingDragPlaceholder = column.querySelector(".drag-placeholder");
+
+    // Se o card já está "dentro" da posição do placeholder, não faça nada
+    if (existingDragPlaceholder) {
+        const dragPlaceholderRect =
+            existingDragPlaceholder.getBoundingClientRect();
+
+        if (
+            event.clientY >= dragPlaceholderRect.top &&
+            event.clientY <= dragPlaceholderRect.bottom
+        ) {
+            return;
+        }
+    }
+
+    // Inserção do placeholder:
+
+    // 1. Acha o primeiro card (que não é o próprio draggedCard) que está logo abaixo da posição do mouse e insere o placeholder antes dele
+    for (const card of cardList.children) {
+        if (card.getBoundingClientRect().bottom >= event.clientY) {
+            if (card === existingDragPlaceholder) return;
+            existingDragPlaceholder?.remove();
+            if (
+                card === draggedCard ||
+                card.previousElementSibling === draggedCard
+            )
+                return;
+            cardList.insertBefore(
+                existingDragPlaceholder ?? makeDragPlaceholder(draggedCard),
+                card
+            );
+            return;
+        }
+    }
+    // 2. Se nenhum card for encontrado abaixo da posição do mouse (dentro da lista de cards atual), insere o placeholder no final da lista
+    existingDragPlaceholder?.remove();
+    if (cardList.lastElementChild === draggedCard) {
+        return;
+    }
+    cardList.append(
+        existingDragPlaceholder ?? makeDragPlaceholder(draggedCard)
+    );
 }
 
 document.addEventListener("DOMContentLoaded", popularQuadros());
