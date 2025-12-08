@@ -17,6 +17,12 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.card-aluno.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
 .placeholder {
     border: 2px dashed var(--azul);
     border-radius: 12px;

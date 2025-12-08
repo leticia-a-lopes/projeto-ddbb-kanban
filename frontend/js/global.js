@@ -162,7 +162,7 @@ function adicionarDragDrop() {
                 );
                 return;
             }
-
+            card.classList.add("dragging");
             event.dataTransfer.effectAllowed = "move";
 
             event.dataTransfer.setData("card-aluno", "");
@@ -172,6 +172,7 @@ function adicionarDragDrop() {
         // Limpa ID armazenado após a ação de arrastar terminar
         card.addEventListener("dragend", () => {
             activeDragCardId = null;
+            card.classList.remove("dragging");
         });
     });
 
