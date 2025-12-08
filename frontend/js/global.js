@@ -200,7 +200,8 @@ function adicionarDragDrop() {
             const dragPlaceholder = column.querySelector(".drag-placeholder");
             if (!dragPlaceholder) return;
             draggedCard.remove();
-            column.children[1].insertBefore(draggedCard, dragPlaceholder);
+            cardList = column.querySelector(".card-list");
+            cardList.insertBefore(draggedCard, dragPlaceholder);
             dragPlaceholder.remove();
         });
     });
