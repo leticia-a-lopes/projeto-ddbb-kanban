@@ -177,16 +177,16 @@ function adicionarDragDrop() {
     });
 
     columns.forEach((column) => {
-        column.addEventListener("dragover", movePlaceholder);
+        column.addEventListener("dragover", moveDragPlaceholder);
 
-        // Remove placeholder quando o card sair da área
+        // Remove o placeholder quando o card sair da área
         column.addEventListener("dragleave", (event) => {
             if (column.contains(event.relatedTarget)) {
                 return;
             }
 
-            const placeholder = column.querySelector(".placeholder");
-            placeholder?.remove();
+            const dragPlaceholder = column.querySelector(".drag-placeholder");
+            dragPlaceholder?.remove();
         });
 
         // Insere card na área de drop (inserimos ele acima do placeholder e logo em seguida removemos o placeholder)
@@ -197,25 +197,25 @@ function adicionarDragDrop() {
                 `[data-id-cliente="${activeDragCardId}"]`
             );
 
-            const placeholder = column.querySelector(".placeholder");
-            if (!placeholder) return;
+            const dragPlaceholder = column.querySelector(".drag-placeholder");
+            if (!dragPlaceholder) return;
             draggedCard.remove();
-            column.children[1].insertBefore(draggedCard, placeholder);
-            placeholder.remove();
+            column.children[1].insertBefore(draggedCard, dragPlaceholder);
+            dragPlaceholder.remove();
         });
     });
 }
 
-// Cria o element placeholder de acordo com o tamanho do card
-function makePlaceholder(draggedCard) {
-    const placeholder = document.createElement("div");
-    placeholder.classList.add("placeholder");
-    placeholder.style.height = `${draggedCard.offsetHeight}px`;
-    return placeholder;
+// Cria o elemento placeholder de acordo com o tamanho do card
+function makeDragPlaceholder(draggedCard) {
+    const dragPlaceholder = document.createElement("div");
+    dragPlaceholder.classList.add("drag-placeholder");
+    dragPlaceholder.style.height = `${draggedCard.offsetHeight}px`;
+    return dragPlaceholder;
 }
 
 // Decide onde colocar o placeholder
-function movePlaceholder(event) {
+function moveDragPlaceholder(event) {
     // Verifica se estamos lidando com o elemento correto (isso foi definido antes em dragstart)
     if (!event.dataTransfer.types.includes("card-aluno")) {
         return;
@@ -244,15 +244,16 @@ function movePlaceholder(event) {
         return;
     }
 
-    const existingPlaceholder = column.querySelector(".placeholder");
+    const existingDragPlaceholder = column.querySelector(".drag-placeholder");
 
     // Se o card já está "dentro" da posição do placeholder, não faça nada
-    if (existingPlaceholder) {
-        const placeholderRect = existingPlaceholder.getBoundingClientRect();
+    if (existingDragPlaceholder) {
+        const dragPlaceholderRect =
+            existingDragPlaceholder.getBoundingClientRect();
 
         if (
-            event.clientY >= placeholderRect.top &&
-            event.clientY <= placeholderRect.bottom
+            event.clientY >= dragPlaceholderRect.top &&
+            event.clientY <= dragPlaceholderRect.bottom
         ) {
             return;
         }
@@ -263,26 +264,28 @@ function movePlaceholder(event) {
     // 1. Acha o primeiro card (que não é o próprio draggedCard) que está logo abaixo da posição do mouse e insere o placeholder antes dele
     for (const card of cardList.children) {
         if (card.getBoundingClientRect().bottom >= event.clientY) {
-            if (card === existingPlaceholder) return;
-            existingPlaceholder?.remove();
+            if (card === existingDragPlaceholder) return;
+            existingDragPlaceholder?.remove();
             if (
                 card === draggedCard ||
                 card.previousElementSibling === draggedCard
             )
                 return;
             cardList.insertBefore(
-                existingPlaceholder ?? makePlaceholder(draggedCard),
+                existingDragPlaceholder ?? makeDragPlaceholder(draggedCard),
                 card
             );
             return;
         }
     }
     // 2. Se nenhum card for encontrado abaixo da posição do mouse (dentro da lista de cards atual), insere o placeholder no final da lista
-    existingPlaceholder?.remove();
+    existingDragPlaceholder?.remove();
     if (cardList.lastElementChild === draggedCard) {
         return;
     }
-    cardList.append(existingPlaceholder ?? makePlaceholder(draggedCard));
+    cardList.append(
+        existingDragPlaceholder ?? makeDragPlaceholder(draggedCard)
+    );
 }
 
 document.addEventListener("DOMContentLoaded", popularQuadros());

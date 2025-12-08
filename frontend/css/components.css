@@ -23,7 +23,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.placeholder {
+.drag-placeholder {
     border: 2px dashed var(--azul);
     border-radius: 12px;
 }
