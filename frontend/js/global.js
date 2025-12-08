@@ -152,14 +152,17 @@ function adicionarDragDrop() {
 
         // Armazena ID para uso no drop
         card.addEventListener("dragstart", (event) => {
-            if (!card.data) {
+            if (
+                !card.hasAttribute("data-id-cliente") ||
+                !card.dataset.idCliente
+            ) {
                 console.error(
                     "Drag card: card não possui [data-id-cliente] válido:",
                     card
                 );
                 return;
             }
-            console.log("here");
+
             event.dataTransfer.effectAllowed = "move";
 
             event.dataTransfer.setData("card-aluno", "");
