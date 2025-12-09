@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config({ quiet: true });
 
 async function getConnection() {
-  //verifica se ja existe conecçao com o BD
+  //verifica se ja existe conexao com o BD
   if (mongoose.connection.readyState == 1) {
     return;
   }
@@ -23,10 +23,10 @@ async function closeConnection() {
   await mongoose
     .disconnect()
     .then(() => {
-      console.log("Disconectado com sucesso!");
+      console.log("Desconectado com sucesso!");
     })
     .catch((err) => {
-      console.log("nao foi possivel se desconectar " + err);
+      console.log("Nao foi possivel se desconectar " + err);
     });
 }
 

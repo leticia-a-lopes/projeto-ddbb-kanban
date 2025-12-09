@@ -1,5 +1,5 @@
 import { getConnection } from "./DBconnection.js";
-import { User, Client } from "./schemas.js";
+import { User, Client, Board } from "./schemas.js";
 import { Request } from "express";
 
 //create, read, update, delete
@@ -11,8 +11,24 @@ getConnection(); //Estabelece conexao com o BD
 
 //Insert user
 export const insertUser = async (req: Request) => {
-  const { nome_usuario, email_usuario, senha } = req.body;
-  await User.create(nome_usuario, email_usuario)
+  const {
+    nome_usuario,
+    email_usuario,
+    senha,
+    isAdmin,
+    corlcone,
+    telefone,
+    tokenRecuperacao,
+  } = req.body;
+  await User.create(
+    nome_usuario,
+    email_usuario,
+    senha,
+    isAdmin,
+    corlcone,
+    telefone,
+    tokenRecuperacao
+  )
     .then(() => {
       console.log("Usuario inserido com sucesso");
     })
@@ -46,10 +62,26 @@ export const readAllUsers = async () => {
 
 //Update user
 export const updateUser = async (req: Request, id: string) => {
-  const { nome, email, senha } = req.body;
+  const {
+    nome_usuario,
+    email_usuario,
+    senha,
+    isAdmin,
+    corlcone,
+    telefone,
+    tokenRecuperacao,
+  } = req.body;
   const user = await User.findByIdAndUpdate(
     id,
-    { nome, email, senha },
+    {
+      nome_usuario,
+      email_usuario,
+      senha,
+      isAdmin,
+      corlcone,
+      telefone,
+      tokenRecuperacao,
+    },
     { runValidators: true }
   ).catch((err) => {
     console.log("Nao foi possivel atualizar os dados do usuario");
@@ -119,7 +151,7 @@ export const readAllClients = async () => {
 };
 
 //Listar todos os clientes de um usuario
-const readAllClientsByUserId = async (userId: string) => {
+export const readAllClientsByUserId = async (userId: string) => {
   const clientsByUser = await Client.find({ id_usuario: userId })
     .then(() => {
       console.log(clientsByUser);
