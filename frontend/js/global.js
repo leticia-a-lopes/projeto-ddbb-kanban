@@ -65,7 +65,7 @@ function adicionarCard(
     const coluna = document.getElementById(colunaId);
 
     const userIconHTML = `
-        <div class="card-user-icon bg-azul" data-tooltip="${nomeUsuario}" data-id-usuario="${idUsuario}">
+        <div class="card-user-icon ${corIconeUsuario}" data-tooltip="${nomeUsuario}" data-id-usuario="${idUsuario}">
             <svg><use href="#icon-user"></use></svg>
         </div>
     `;
