@@ -16,7 +16,7 @@ router.post("/esqueci-senha", async (req, res) => {
     }
 
     //Gera token (ex: 6 caracteres)
-    const token = crypto.randomBytes(3).toString("hex").toUpperCase(); 
+    const token = crypto.randomBytes(3).toString("hex").toUpperCase();
 
     //Calcula a data de expiração (30 minutos a partir de agora)
     const expiraEm = new Date();
@@ -34,7 +34,6 @@ router.post("/esqueci-senha", async (req, res) => {
     );
 
     res.json({ mensagem: "Email de recuperação enviado." });
-
   } catch (err: any) {
     console.log(err);
     res.status(500).json({ erro: "Erro interno ao recuperar senha." });

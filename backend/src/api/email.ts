@@ -1,17 +1,24 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config({ quiet: true });
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "email@gmail.com",
-    pass: "senhaaqui ", //Usar App Password do Gmail
+    user: process.env.USER_MAIL,
+    pass: process.env.USER_PASS,
   },
 });
 
-export const enviarEmail = async (email: string, assunto: string, texto: string) => {
+export const enviarEmail = async (
+  email: string,
+  assunto: string,
+  texto: string
+) => {
   try {
     await transporter.sendMail({
-      from: "Sistema Kanban <email@gmail.com>",
+      from: "Sistema Kanban <" + process.env.USER_MAIL + ">",
       to: email,
       subject: assunto,
       text: texto,

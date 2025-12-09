@@ -7,7 +7,11 @@ import {
   updateQuadro,
   deleteQuadro,
 } from "../database/CRUDops.js";
-import { verificarToken, verificarAdmin, AuthRequest } from "../middleware/auth.js";
+import {
+  verificarToken,
+  verificarAdmin,
+  AuthRequest,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -35,34 +39,36 @@ const generateDefaultColumns = (num: number) => {
 };
 
 //Criação do Quadro
-router.post("/", [verificarToken, verificarAdmin], async (req: AuthRequest, res:any) => {
-  try {
-    const { nome, numColunas } = req.body;
+router.post(
+  "/",
+  [verificarToken, verificarAdmin],
+  async (req: AuthRequest, res: any) => {
+    try {
+      const { nome, numColunas } = req.body;
 
-    if (!nome) {
-      return res
-        .status(400)
-        .json({ mensagem: "O nome do quadro é obrigatório." });
-    }
+      if (!nome) {
+        return res
+          .status(400)
+          .json({ mensagem: "O nome do quadro é obrigatório." });
+      }
 
-    if (typeof numColunas !== "number" || numColunas < 1) {
-      //Sugestão: Se não for passado um número, talvez assumir 4 (o padrão do FIXED_COLUMN_NAMES.
-      //Por enquanto, é mantido a exigência de um número válido.
-      return res
-        .status(400)
-        .json({
+      if (typeof numColunas !== "number" || numColunas < 1) {
+        //Sugestão: Se não for passado um número, talvez assumir 4 (o padrão do FIXED_COLUMN_NAMES.
+        //Por enquanto, é mantido a exigência de um número válido.
+        return res.status(400).json({
           mensagem:
             "É necessário especificar um número válido de colunas (mínimo 1).",
         });
-    }
-    const colunasGeradas = generateDefaultColumns(numColunas);
-    const novoQuadro = await insertQuadro(nome, colunasGeradas);
+      }
+      const colunasGeradas = generateDefaultColumns(numColunas);
+      const novoQuadro = await insertQuadro(nome, colunasGeradas);
 
-    res.status(201).json(novoQuadro);
-  } catch (err: any) {
-    res.status(500).json({ erro: "Erro ao criar quadro: " + err.message });
+      res.status(201).json(novoQuadro);
+    } catch (err: any) {
+      res.status(500).json({ erro: "Erro ao criar quadro: " + err.message });
+    }
   }
-});
+);
 
 //Listar todos os Quadros (qualquer usuário logado)
 router.get("/", verificarToken, async (req, res) => {
@@ -80,15 +86,23 @@ router.get("/:id", verificarToken, async (req, res) => {
 });
 
 //Editar estrutura/nome do quadro (admin apenas)
-router.put("/:id", [verificarToken, verificarAdmin], async (req: AuthRequest, res: any) => {
-  const updated = await updateQuadro(req.params.id, req.body);
-  res.json(updated);
-});
+router.put(
+  "/:id",
+  [verificarToken, verificarAdmin],
+  async (req: AuthRequest, res: any) => {
+    const updated = await updateQuadro(req.params.id, req.body);
+    res.json(updated);
+  }
+);
 
 //Deletar Quadro (admin apenas)
-router.delete("/:id", [verificarToken, verificarAdmin], async (req: AuthRequest, res: any) => {
-  await deleteQuadro(req.params.id);
-  res.json({ mensagem: "Quadro removido com sucesso." });
-});
+router.delete(
+  "/:id",
+  [verificarToken, verificarAdmin],
+  async (req: AuthRequest, res: any) => {
+    await deleteQuadro(req.params.id);
+    res.json({ mensagem: "Quadro removido com sucesso." });
+  }
+);
 
 export default router;
