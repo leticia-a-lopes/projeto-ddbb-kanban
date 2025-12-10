@@ -6,7 +6,7 @@ import {
   readAllQuadros,
   updateQuadro,
   deleteQuadro,
-} from "../database/CRUDops.js";
+} from "../database/CRUDboard.js";
 import {
   verificarToken,
   verificarAdmin,

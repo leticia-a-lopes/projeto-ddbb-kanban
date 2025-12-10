@@ -1,7 +1,7 @@
 import express from "express";
 import crypto from "crypto";
 //Necessário a implementação dessas duas funções para ajudar na recuperação de senhas
-import { findUserByEmail, saveRecoveryToken } from "../database/CRUDops.js";
+import { findUserByEmail, saveRecoveryToken } from "../database/CRUDuser.js";
 import { enviarEmail } from "../api/email.js";
 
 const router = express.Router();

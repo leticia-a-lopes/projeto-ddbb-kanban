@@ -9,7 +9,7 @@ import {
   updateUser,
   deleteUser,
   findUserByEmail,
-} from "../database/CRUDops.js";
+} from "../database/CRUDuser.js";
 import { enviarEmail } from "../api/email.js";
 import {
   verificarToken,

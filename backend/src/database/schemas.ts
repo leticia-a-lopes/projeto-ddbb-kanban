@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+//ESQUEMA DO USUARIO
+
 const userSchema = new mongoose.Schema({
   nome_usuario: {
     type: String,
@@ -16,11 +18,19 @@ const userSchema = new mongoose.Schema({
   tokenRecuperacao: String,
 });
 
+//ESQUEMA DO CLIENTE
+
 const clientSchema = new mongoose.Schema({
   nome_cliente: String,
   telefone: String,
-  email_cliente: String,
-  cpf_cliente: String,
+  email_cliente: {
+    type: String,
+    unique: true,
+  },
+  cpf_cliente: {
+    type: String,
+    unique: true,
+  },
   status: String,
   id_usuario: String,
   anotacoes: String,
@@ -36,8 +46,10 @@ const clientSchema = new mongoose.Schema({
   dataArquivamento: Date,
 });
 
+//ESQUEMA DO QUADRO
+
 const boardSchema = new mongoose.Schema({
-  nome: String,
+  nome_quadro: String,
   colunasRender: Number,
 });
 

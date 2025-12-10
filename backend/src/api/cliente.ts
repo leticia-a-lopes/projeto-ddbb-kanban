@@ -1,5 +1,4 @@
 import express from "express";
-
 //Descomentar quando as funções forem implementadas pelo CRUDops
 import {
   insertClient,
@@ -7,14 +6,13 @@ import {
   readClient,
   deleteClient,
   readAllClients,
-  //checkClientDuplicity,
-  //updateClientColumn,
-  //updateClientResponsible,
-  //archiveClient,
-  //readClientsByQuadro,
-  //readArchivedClients,
-  //unarchiveClient,
-} from "../database/CRUDops.js";
+  updateClientColumn,
+  updateClientResponsible,
+  archiveClient,
+  readClientsByQuadro,
+  readArchivedClients,
+  unarchiveClients,
+} from "../database/CRUDclient.js";
 import { verificarToken, AuthRequest } from "../middleware/auth.js";
 
 //Usar o router para modularizar melhor as diferentes rotas
