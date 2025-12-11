@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "dev": "npx tsx --watch src/api/api.ts"
+    "dev": "npx tsx --watch src/api/server.ts"
   },
   "keywords": [],
   "author": "",

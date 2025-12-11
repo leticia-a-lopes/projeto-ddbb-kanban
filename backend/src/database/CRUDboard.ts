@@ -1,6 +1,6 @@
-import { getConnection } from "./DBconnection.js";
 import { Board } from "./schemas.js";
 import { Request } from "express";
+import { AuthRequest } from "../middleware/auth.js";
 
 export const insertQuadro = async (nome: string, colunas: number) => {
   const quadro = await Board.create({
@@ -11,7 +11,7 @@ export const insertQuadro = async (nome: string, colunas: number) => {
   });
 };
 
-export const updateQuadro = async (id: String, req: Request) => {
+export const updateQuadro = async (id: String, req: AuthRequest) => {
   const { nome_quadro, newColunaRender } = req.body;
   const updatedQuadro = await Board.findByIdAndUpdate(
     id,
