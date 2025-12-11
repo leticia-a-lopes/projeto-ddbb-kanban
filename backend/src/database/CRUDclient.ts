@@ -44,10 +44,8 @@ export const insertClient = async (req: Request) => {
 };
 
 //Read Client
-export const readClient = async (id: string) => {
-  const clientInfo = await Client.find({
-    __id: id,
-  })
+export const readClient = async (id: String) => {
+  const clientInfo = await Client.findById(id)
     .then(() => {
       console.log(JSON.stringify(clientInfo));
     })

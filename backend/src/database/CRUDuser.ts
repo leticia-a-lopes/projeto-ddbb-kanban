@@ -30,10 +30,8 @@ export const insertUser = async (req: Request) => {
 };
 
 //Read user
-export const readUser = async (id: string) => {
-  const userInfo = await User.find({
-    __id: id,
-  })
+export const readUser = async (id: String) => {
+  const userInfo = await User.findById(id)
     .then(() => {
       console.log(JSON.stringify(userInfo));
     })
@@ -75,28 +73,28 @@ export const findUserByEmail = async (email: String) => {
 };
 
 //Update user
-export const updateUser = async (req: Request, id: string) => {
+export const updateUser = async (req: Request, id: String) => {
   const {
-    nome_usuario,
-    email_usuario,
-    senha,
-    isAdmin,
-    corlcone,
-    telefone,
-    tokenRecuperacao,
+    new_nome_usuario,
+    new_email_usuario,
+    new_senha,
+    new_isAdmin,
+    new_corlcone,
+    new_telefone,
+    new_tokenRecuperacao,
   } = req.body;
   const user = await User.findByIdAndUpdate(
     id,
     {
-      nome_usuario,
-      email_usuario,
-      senha,
-      isAdmin,
-      corlcone,
-      telefone,
-      tokenRecuperacao,
+      nome_usuario: new_nome_usuario,
+      email_usuario: new_email_usuario,
+      senha: new_senha,
+      isAdmin: new_isAdmin,
+      corlcone: new_corlcone,
+      telefone: new_telefone,
+      tokenRecuperacao: new_tokenRecuperacao,
     },
-    { runValidators: true }
+    { runValidators: true, returnDocument: "after" }
   ).catch((err) => {
     console.log("Nao foi possivel atualizar os dados do usuario");
   });
