@@ -60,8 +60,8 @@ router.post(
             "É necessário especificar um número válido de colunas (mínimo 1).",
         });
       }
-      const colunasGeradas = generateDefaultColumns(numColunas);
-      const novoQuadro = await insertQuadro(nome, colunasGeradas);
+
+      const novoQuadro = await insertQuadro(nome, numColunas);
 
       res.status(201).json(novoQuadro);
     } catch (err: any) {
@@ -78,7 +78,7 @@ router.get("/", verificarToken, async (req, res) => {
 
 //Buscar quadro por id (qualquer usuário logado)
 router.get("/:id", verificarToken, async (req, res) => {
-  const quadro = await readQuadro(req.params.id);
+  const quadro = await readQuadro(req.params.id!);
   if (!quadro) {
     return res.status(404).json({ mensagem: "Quadro não encontrado." });
   }
@@ -90,7 +90,7 @@ router.put(
   "/:id",
   [verificarToken, verificarAdmin],
   async (req: AuthRequest, res: any) => {
-    const updated = await updateQuadro(req.params.id, req.body);
+    const updated = await updateQuadro(req.params.id!, req);
     res.json(updated);
   }
 );
@@ -100,7 +100,7 @@ router.delete(
   "/:id",
   [verificarToken, verificarAdmin],
   async (req: AuthRequest, res: any) => {
-    await deleteQuadro(req.params.id);
+    await deleteQuadro(req.params.id!);
     res.json({ mensagem: "Quadro removido com sucesso." });
   }
 );

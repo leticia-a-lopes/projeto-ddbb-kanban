@@ -104,7 +104,7 @@ export const readArchivedClients = async () =>{
 
 //Listar todos os clientes nao arquivados
 
-export const unarchiveClients = async () =>{
+export const unarchivedClients = async () =>{
   const unarchivedClients = await Client.find({estaArquivado:false}).then(()=>{
     console.log(JSON.stringify(unarchivedClients))
   }).catch((err)=>{
@@ -113,6 +113,64 @@ export const unarchiveClients = async () =>{
 
   return unarchivedClients;
 }
+
+//Desarquivar cliente(s)
+export const desarquivarClientes = async (id: string, colunaDeOrigem: string) => {
+    try {
+        if (!id || !colunaDeOrigem) {
+            throw new Error("ID e Coluna de Origem são obrigatórios para desarquivar.");
+        }
+
+        const unarchivedClient = await Client.findByIdAndUpdate(
+            id,
+            { 
+                estaArquivado: false,        // Define como NÃO arquivado
+                colunaAtual: colunaDeOrigem, // Move para a coluna de onde veio
+                motivoDesistencia: null,     // Limpa o motivo de desistência
+                colunaDeOrigem: null,        // Limpa a coluna de origem
+                dataArquivamento: null,      // Limpa a data de arquivamento
+            },
+            { 
+                new: true, // Garante que o documento retornado é o ATUALIZADO
+                runValidators: true 
+            }
+        );
+        
+        if (!unarchivedClient) {
+            throw new Error(`Card com ID ${id} não encontrado.`);
+        }
+        
+        console.log("Card desarquivado com sucesso.");
+        return unarchivedClient;
+
+    } catch (err: any) {
+        console.error("Não foi possível desarquivar o card: " + err.message);
+        throw new Error("Falha ao desarquivar o card no banco de dados.");
+    }
+};
+
+//Verificação de Duplicidade (verifica se um cliente já existe)
+export const checkClientDuplicity = async (data: { telefone?: string, email_cliente?: string, cpf_cliente?: string }) => {
+    //Cria um array de condições para buscar qualquer um dos campos fornecidos
+    const query = { $or: [] as any[] };
+    
+    //Adiciona condições apenas se o valor estiver presente na requisição
+    if (data.telefone) query.$or.push({ telefone: data.telefone });
+    if (data.email_cliente) query.$or.push({ email_cliente: data.email_cliente });
+    if (data.cpf_cliente) query.$or.push({ cpf_cliente: data.cpf_cliente });
+    
+    if (query.$or.length === 0) return null;
+
+    try {
+        //Busca o primeiro cliente que casar com qualquer uma das condições
+        const clienteDuplicado = await Client.findOne(query);
+        return clienteDuplicado;
+
+    } catch (err: any) {
+        console.error("Erro na busca de duplicidade: " + err.message);
+        throw new Error("Falha ao buscar duplicidade no banco de dados.");
+    }
+};
 
 //Update client
 export const updateClient = async (req: Request, id: string) => {
@@ -146,7 +204,7 @@ export const updateClient = async (req: Request, id: string) => {
 
 //Update coluna do cliente
 
-export const updateClientColumn = async (id:String,column:String){
+export const updateClientColumn = async (id:String,column:String) => {
   const updatedUser = await Client.findByIdAndUpdate(id, {colunaAtual:column},{runValidators:true,returnDocument:"after"}).then(()=>{
     console.log(JSON.stringify(updatedUser));
   }).catch((err=>{
