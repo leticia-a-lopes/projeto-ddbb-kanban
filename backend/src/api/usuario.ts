@@ -9,7 +9,7 @@ import {
   updateUser,
   deleteUser,
   findUserByEmail,
-} from "../database/CRUDops.js";
+} from "../database/CRUDuser.js";
 import { enviarEmail } from "../api/email.js";
 import {
   verificarToken,
@@ -61,8 +61,11 @@ router.post(
   [verificarToken, verificarAdmin],
   async (req: AuthRequest, res: any) => {
     try {
-      const { nome_usuario, email_usuario, telefone, corIcone, isAdmin } =
-        req.body;
+      const {
+        email_usuario,
+        isAdmin,
+        tokenRecuperacao,
+      } = req.body;
 
       //Gera senha aleatória
       const senhaAleatoria = crypto.randomBytes(4).toString("hex");
@@ -71,17 +74,11 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       const senhaHash = await bcrypt.hash(senhaAleatoria, salt);
 
-      //Salva no banco com a senha hash
-      const novoUsuarioDados = {
-        nome_usuario,
-        email_usuario,
-        senha: senhaHash,
-        telefone,
-        corIcone,
-        isAdmin: isAdmin || false,
-      };
+      req.body.senha = senhaHash;
+      req.body.tokenRecuperacao = tokenRecuperacao;
+      req.body.isAdmin = isAdmin || false;
 
-      const usuarioCriado = await insertUser(novoUsuarioDados);
+      const usuarioCriado = await insertUser(req.body);
 
       //Envia a senha original (aleatória) por email para o usuário saber qual é
       await enviarEmail(
