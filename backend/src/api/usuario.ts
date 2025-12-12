@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
 // [verificarToken, verificarAdmin] antes da função para verificar se de fato é admin
 router.post(
   "/",
-  // [verificarToken, verificarAdmin],
+  [verificarToken, verificarAdmin],
   async (req: AuthRequest, res: any) => {
     try {
       const { email_usuario, isAdmin, tokenRecuperacao } = req.body;

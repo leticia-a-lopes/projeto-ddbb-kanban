@@ -150,32 +150,6 @@ export const desarquivarClientes = async (
   }
 };
 
-//Verificação de Duplicidade (verifica se um cliente já existe)
-export const checkClientDuplicity = async (data: {
-  telefone?: string;
-  email_cliente?: string;
-  cpf_cliente?: string;
-}) => {
-  //Cria um array de condições para buscar qualquer um dos campos fornecidos
-  const query = { $or: [] as any[] };
-
-  //Adiciona condições apenas se o valor estiver presente na requisição
-  if (data.telefone) query.$or.push({ telefone: data.telefone });
-  if (data.email_cliente) query.$or.push({ email_cliente: data.email_cliente });
-  if (data.cpf_cliente) query.$or.push({ cpf_cliente: data.cpf_cliente });
-
-  if (query.$or.length === 0) return null;
-
-  try {
-    //Busca o primeiro cliente que casar com qualquer uma das condições
-    const clienteDuplicado = await Client.findOne(query);
-    return clienteDuplicado;
-  } catch (err: any) {
-    console.error("Erro na busca de duplicidade: " + err.message);
-    throw new Error("Falha ao buscar duplicidade no banco de dados.");
-  }
-};
-
 //Update client
 export const updateClient = async (req: Request, id: string) => {
   const {

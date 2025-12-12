@@ -41,12 +41,27 @@ export const readUser = async (id: String) => {
 
 //Recuperar token
 
-export const saveRecoveryToken = async (id: String, token: string) => {
-  const tokenRecuperacao = User.find(id, token).catch((err) => {
-    console.log("Nao foi possivel fazer a busca do token");
-  });
+export const saveRecoveryToken = async (userId: string, token: string) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { 
+                tokenRecuperacao: token,
+            },
+            { new: true, runValidators: true }
+        );
 
-  return tokenRecuperacao;
+        if (!updatedUser) {
+            throw new Error("Usuário não encontrado.");
+        }
+        
+        console.log("Token de recuperação salvo com sucesso para o usuário:", userId);
+        return updatedUser;
+
+    } catch (err: any) {
+        console.error("Falha ao salvar o token de recuperação: " + err.message);
+        throw new Error("Falha no banco de dados durante a gravação do token.");
+    }
 };
 
 //Listar todos os usuarios
@@ -100,6 +115,30 @@ export const updateUser = async (req: Request, id: String) => {
     console.log("Nao foi possivel atualizar os dados do usuario");
   });
   return user;
+};
+
+export const updatePasswordByToken = async (userId: string, newSenhaHash: string) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { 
+                senha: newSenhaHash,
+                tokenRecuperacao: null,
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            throw new Error("Usuário não encontrado.");
+        }
+        
+        console.log("Senha e token de recuperação atualizados com sucesso.");
+        return updatedUser;
+
+    } catch (err: any) {
+        console.error("Falha ao atualizar a senha: " + err.message);
+        throw new Error("Falha no banco de dados durante o reset de senha.");
+    }
 };
 
 //Delete user
