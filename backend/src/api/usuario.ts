@@ -46,10 +46,14 @@ router.post("/login", async (req, res) => {
     );
 
     res.json({
-      mensagem: "Login realizado!",
-      token,
-      usuario: { nome: user.nome_usuario, isAdmin: user.isAdmin },
-    });
+            mensagem: "Login realizado!",
+            token,
+            usuario: {
+                id: user._id, // AQUI
+                nome: user.nome_usuario,
+                isAdmin: user.isAdmin,
+            },
+        });
   } catch (error) {
     res.status(500).json({ erro: error });
     console.log(error);
@@ -67,9 +71,9 @@ router.post("/primeiro-admin", async (req, res) => {
     const novoUsuarioDados = {
       nome_usuario,
       email_usuario,
-      senha: senhaHash, // <-- AGORA ESTA SENHA SERÁ USADA
+      senha: senhaHash,
       telefone,
-      // corlcone, // Adicione aqui se for obrigatório no Schema
+      // corlcone,
       isAdmin: true, 
     };
 
