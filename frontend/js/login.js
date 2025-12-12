@@ -52,6 +52,7 @@ async function login() {
 
         const loginData = await loginResponse.json();
         localStorage.setItem("kanban_token", loginData.token);
+        localStorage.setItem("user_id", loginData.usuario.id);
         if (lembrar) {
             localStorage.setItem("lembrar", "true");
         } else {
