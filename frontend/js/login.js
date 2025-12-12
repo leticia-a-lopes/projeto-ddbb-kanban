@@ -25,47 +25,54 @@ async function login() {
     const lembrar = document.getElementById("lembrar").checked;
 
     if (!email || !senha) {
-        mostrarStatusLogin("Por favor, preencha email e senha", "red");
+        mostrarStatus("Por favor, preencha email e senha", "red");
         return;
     }
 
-    mostrarStatusLogin("Carregando...");
+    mostrarStatus("Carregando...");
 
     try {
-        const response = await fetch(`${API_URL}/usuarios/login`, {
+        const loginResponse = await fetch(`${API_URL}/usuarios/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, senha }),
         });
 
-        const data = await response.json();
-
-        if (response.ok) {
-            localStorage.setItem("kanban_token", data.token);
-            if (lembrar) {
-                localStorage.setItem("lembrar", "true");
+        if (!loginResponse.ok) {
+            const dados = await loginResponse.json();
+            if (dados.mensagem) {
+                mostrarStatus(dados.mensagem, "red");
+                console.log({ success: false, error: dados.mensagem });
             } else {
-                localStorage.removeItem("lembrar");
+                mostrarStatus("Erro ao fazer login! Tente novamente.", "red");
+                console.log({ success: false, error: dados.erro });
             }
-
-            mostrarStatusLogin(
-                "Login realizado com sucesso! Redirecionando...",
-                "green"
-            );
-
-            // Redirecionar após 2 segundos
-            setTimeout(() => {
-                window.location.href = "quadro_principal.html";
-            }, 2000);
-        } else {
-            console.log({ success: false, error: data.mensagem });
+            return;
         }
+
+        const loginData = await loginResponse.json();
+        localStorage.setItem("kanban_token", loginData.token);
+        if (lembrar) {
+            localStorage.setItem("lembrar", "true");
+        } else {
+            localStorage.removeItem("lembrar");
+        }
+
+        mostrarStatus(
+            "Login realizado com sucesso! Redirecionando...",
+            "green"
+        );
+
+        // Redirecionar após 2 segundos
+        setTimeout(() => {
+            window.location.href = "quadro_principal.html";
+        }, 2000);
     } catch (error) {
         console.log({ success: false, error: error.message });
     }
 }
 
-function mostrarStatusLogin(message, cor = "black") {
+function mostrarStatus(message, cor = "black") {
     statusElement.innerText = message;
     statusElement.style.color = cor;
 }
