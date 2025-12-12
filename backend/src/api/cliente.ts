@@ -12,7 +12,6 @@ import {
   readArchivedClients,
   unarchivedClients,
   desarquivarClientes,
-  checkClientDuplicity,
 } from "../database/CRUDclient.js";
 import { verificarToken, AuthRequest } from "../middleware/auth.js";
 
@@ -44,28 +43,6 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   await deleteClient(req.params.id);
   res.json({ mensagem: "Card removido" });
-});
-
-//Rota de verificação de duplicidade
-router.post("/verificar-duplicidade", async (req, res) => {
-  const { telefone, email_cliente, cpf_cliente } = req.body;
-
-  const clienteDuplicado = await checkClientDuplicity({
-    telefone,
-    email_cliente,
-    cpf_cliente,
-  });
-
-  if (clienteDuplicado) {
-    return res.json({
-      duplicado: true,
-      cliente: clienteDuplicado,
-      mensagem: `Cliente já existe. Arquivado: ${clienteDuplicado.estaArquivado}`,
-      estaArquivado: clienteDuplicado.estaArquivado,
-    });
-  }
-
-  res.json({ duplicado: false, mensagem: "Cliente não encontrado." });
 });
 
 //Criação de card (vincular quadro, agendamento e coluna inicial)
@@ -155,7 +132,7 @@ router.get("/quadro/:idQuadro", verificarToken, async (req, res) => {
 });
 
 //GET todos os não arquivados
-router.get("/", verificarToken, (req, res) => {
+router.get("/~arquivados", verificarToken, (req, res) => {
   const naoArquivados = unarchivedClients();
   res.json(naoArquivados);
 });

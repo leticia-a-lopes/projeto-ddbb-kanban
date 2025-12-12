@@ -44,12 +44,12 @@ export const readUser = async (id: String) => {
 
 //Recuperar token
 
-export const saveRecoveryToken = async (id: String) => {
-  const token = User.find(id, "tokenRecuperacao").catch((err) => {
+export const saveRecoveryToken = async (id: String, token: string) => {
+  const tokenRecuperacao = User.find(id, token).catch((err) => {
     console.log("Nao foi possivel fazer a busca do token");
   });
 
-  return token;
+  return tokenRecuperacao;
 };
 
 //Listar todos os usuarios
