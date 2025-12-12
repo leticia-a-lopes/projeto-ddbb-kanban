@@ -12,11 +12,7 @@ export const insertClient = async (req: Request) => {
     anotacoes,
     colunaAtual,
     idQuadro,
-    agendamento = {},
-    estaArquivado,
-    motivoDesistencia = {},
-    colunaDeOrigem,
-    dataArquivamento = {},
+    agendamento,
   } = req.body;
 
   try {
@@ -31,10 +27,10 @@ export const insertClient = async (req: Request) => {
       colunaAtual,
       idQuadro,
       agendamento,
-      estaArquivado,
-      motivoDesistencia,
-      colunaDeOrigem,
-      dataArquivamento,
+      estaArquivado: false,
+      motivoDesistencia: null,
+      colunaDeOrigem: null,
+      dataArquivamento: null,
     });
     return novo;
   } catch (err) {
@@ -173,7 +169,7 @@ export const updateClient = async (req: Request, id: string) => {
       id_usuario,
       anotacoes,
     },
-    { runValidators: true }
+    { runValidators: true, returnDocument:"after"}
   ).catch((err) => {
     console.log("Nao foi possivel atualizar os dados do cliente " + err);
   });

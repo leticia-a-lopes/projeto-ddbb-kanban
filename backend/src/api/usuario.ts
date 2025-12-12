@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"; // Importante para criptografia
 import jwt from "jsonwebtoken";
 import {
   insertUser,
+  insertAdmin,
   readAllUsers,
   readUser,
   updateUser,
@@ -51,6 +52,39 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ erro: error });
+  }
+});
+
+router.post("/primeiro-admin", async (req, res) => {
+  const { nome_usuario, email_usuario, telefone } = req.body;
+  
+  try {
+    const senhaAleatoria = crypto.randomBytes(8).toString("hex");
+    const salt = await bcrypt.genSalt(10);
+    const senhaHash = await bcrypt.hash(senhaAleatoria, salt);
+
+    const novoUsuarioDados = {
+      nome_usuario,
+      email_usuario,
+      senha: senhaHash,
+      telefone,
+      // corlcone,
+      isAdmin: true, // Garante que seja Admin
+    };
+
+    const usuarioCriado = await insertAdmin(req); 
+
+    await enviarEmail(
+      email_usuario,
+      "Bem-vindo ao Kanban - Acesso Inicial",
+      `Sua senha provisória para o primeiro acesso é: ${senhaAleatoria}`
+    );
+
+    res.status(201).json({ mensagem: "Administrador inicial criado com sucesso!" });
+
+  } catch (err: any) {
+    // Erro 400 geralmente é de violação de unique (email/nome já existem)
+    res.status(400).json({ erro: "Falha ao criar Admin: " + err.message });
   }
 });
 

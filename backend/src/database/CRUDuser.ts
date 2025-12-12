@@ -31,6 +31,35 @@ export const insertUser = async (req: Request) => {
   }
 };
 
+//Insert Admin
+export const insertAdmin = async (req: Request) => {
+  const {
+    nome_usuario,
+    email_usuario,
+    senha,
+    corlcone,
+    telefone,
+    tokenRecuperacao,
+  } = req.body;
+
+  try {
+    const newUser = await User.create({
+      nome_usuario,
+      email_usuario,
+      senha,
+      isAdmin: true,
+      corlcone,
+      telefone,
+      tokenRecuperacao,
+    });
+
+    return newUser;
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+};
+
 //Read user
 export const readUser = async (id: String) => {
   const userInfo = await User.findById(id).catch((err) => {
