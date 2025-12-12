@@ -38,12 +38,14 @@
             width: 100%;
             border-radius: 15px;
             font-size: 20px;
+            cursor: pointer;
         }
-        .conta{
+        .login{
             background-color: #FFFFFF;
             color: #2B302B;
             border: none;
             font-weight: bold;
+            cursor: pointer;
         }
         header{
             width: 100%;
@@ -59,12 +61,14 @@
     </header>
     <div>
         <h1>Cadastre-se</h1>
-        <input type="text" placeholder="Nome Completo"> <input type="text" placeholder="E-Mail">
+        <p class="status"></p>
+        <input type="text" id="nome" placeholder="Nome Completo"> <input type="text" id="email" placeholder="E-Mail">
         <br><br>
-        <input type="password" placeholder="Senha"> <input type="password" placeholder="Confirmar Senha">
+        <input type="password" id="senha" placeholder="Senha"> <input type="password" id="confirmar-senha" placeholder="Confirmar Senha">
         <br><br>
          <button class="continuar">Continuar</button>
         <br><br>
-         <button class="conta">Já tenho uma conta</button>
+         <button class="login">Já tenho uma conta</button>
+         <script src="js/cadastro.js"></script>
 </body>
 </html>
