@@ -21,3 +21,10 @@ Desenvolvido para o processo seletivo da Empresa Junior Focus, para a empresa fi
 A cada login, o usuário receberá um token no email cadastrado, que será utilizado para confirmar a identidade e fazer o login no sistema.
 No momento de criação de um novo usuário, receberá também no email cadastrado uma senha, utilizada para fazer o login.
 Será necessário, para criar um novo quadro, que o usuário esteja logado no sistema
+
+##Como usar na máquina
+
+---
+Baixe o node.js no link: https://nodejs.org/en/download, logo após a instalação, execute no terminal o seguinte comando: npm install typescript.
+Escolha a pasta destino na sua máquina, dentro dela, basta abrir o terminal e executar o comando "git clone https://github.com/leticia-a-lopes/projeto-ddbb-kanban.git",
+logo em seguida, dentro da pasta "backend", ainda no terminal, utilize o comando "npx tsx src/api/server.ts" e então, acesse o endereço: localhost:3000/usuarios
