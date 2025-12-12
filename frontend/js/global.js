@@ -1,5 +1,7 @@
 const API_URL = "http://localhost:3000";
 const quadroEl = document.querySelector(".kanban-board");
+const quadroTituloDropdown = document.querySelector(".dropdown-trigger p");
+const quadrosDropdown = document.querySelector(".dropdown-menu");
 
 function carregarHeader() {
     const headerHTML = `
@@ -150,90 +152,11 @@ function adicionarCard(card, listaCards) {
     listaCards.appendChild(card);
 }
 
-async function carregarQuadroPrincipal() {
-    try {
-        const token = localStorage.getItem("kanban_token");
-
-        const quadroResponse = await fetch(`${API_URL}/quadros`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!quadroResponse.ok) {
-            const dados = await quadroResponse.json();
-            throw new Error(
-                `Erro HTTP ao fazer fetch de quadros! status: ${dados}`
-            );
-        }
-        const quadros = await quadroResponse.json();
-        const quadroPrincipal = quadros.find((quadro) => {
-            const quadroNome = quadro.nome_quadro
-                .replaceAll(" ", "")
-                .toLowerCase();
-
-            return quadroNome === "quadroprincipal";
-        });
-
-        if (quadroPrincipal) {
-            await popularQuadroNormal(quadroPrincipal);
-        } else {
-            await popularQuadroNormal(quadros[0]);
-        }
-    } catch (error) {
-        console.error("Erro ao carregar quadro principal:", error);
-    }
-}
-
-async function popularQuadroArquivados() {
-    try {
-        configurarDragDropQuadro();
-
-        const clienteResponse = await fetch(`${API_URL}/clientes/`);
-        if (!clienteResponse.ok) {
-            const dados = await clienteResponse.json();
-            throw new Error(
-                `Erro HTTP ao fazer fetch de clientes arquivados"! status: ${dados}`
-            );
-        }
-        const clientes = await clienteResponse.json();
-
-        clientesArquivados = clientes.filter(
-            (cliente) => cliente.estaArquivado
-        );
-
-        for (const cliente of clientesArquivados) {
-            const usuarioResponse = await fetch(
-                `${API_URL}/usuarios/${cliente.id_usuario}/`
-            );
-
-            if (!usuarioResponse.ok) {
-                const dados = await usuarioResponse.json();
-                throw new Error(
-                    `Erro HTTP ao fazer fetch de usuarios! status: ${dados}`
-                );
-            }
-
-            const usuario = await usuarioResponse.json();
-
-            const card = criarCardEl(cliente, usuario);
-
-            const listaCards = "lista-" + cliente.colunaAtual;
-
-            adicionarCard(card, listaCards);
-            configurarDragDropCard(card);
-        }
-    } catch (error) {
-        console.error("Erro ao popular quadros:", error);
-    }
-}
-
 async function popularQuadroNormal(quadro) {
     try {
         const token = localStorage.getItem("kanban_token");
         configurarDragDropQuadro();
+        quadroTituloDropdown.innerText = quadro.nome_quadro;
 
         const clienteResponse = await fetch(
             `${API_URL}/clientes/quadro/${quadro._id}`,
@@ -257,13 +180,20 @@ async function popularQuadroNormal(quadro) {
 
         for (const cliente of clientes) {
             const usuarioResponse = await fetch(
-                `${API_URL}/usuarios/${cliente.id_usuario}/`
+                `${API_URL}/usuarios/${cliente.id_usuario}/`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
             );
 
             if (!usuarioResponse.ok) {
                 const dados = await usuarioResponse.json();
                 throw new Error(
-                    `Erro HTTP ao fazer fetch de usuarios! status: ${dados}`
+                    `Erro HTTP ao fazer fetch de usuario! status: ${dados}`
                 );
             }
 
@@ -430,11 +360,39 @@ function configurarDragDropQuadro() {
     });
 }
 
+async function popularDropdownQuadros() {
+    const token = localStorage.getItem("kanban_token");
+
+    const quadroResponse = await fetch(`${API_URL}/quadros`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!quadroResponse.ok) {
+        const dados = await quadroResponse.json();
+        throw new Error(
+            `Erro HTTP ao fazer fetch de quadros! status: ${dados}`
+        );
+    }
+    const quadros = await quadroResponse.json();
+
+    for (const quadro of quadros) {
+        quadrosDropdown.innerHTML += `<a href="quadro_principal.html" class="dropdown-item">${quadro.nome_quadro}</a>`;
+    }
+    // quadrosDropdown.appendChild(
+    //     `<a href="arquivados.html" class="dropdown-item">Arquivados</a>`
+    // );
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("kanban_token");
     if (!token) {
         window.location.href = "tela-login.html";
         return;
     }
-    carregarQuadroPrincipal();
+
+    popularDropdownQuadros();
 });
