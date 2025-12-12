@@ -90,7 +90,7 @@ async function popularQuadroArquivados() {
     try {
         const token = localStorage.getItem("kanban_token");
 
-        const clienteResponse = await fetch(`${API_URL}/cliente/arquivados`, {
+        const clienteResponse = await fetch(`${API_URL}/clientes`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
