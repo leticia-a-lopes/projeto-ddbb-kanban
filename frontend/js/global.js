@@ -2,6 +2,7 @@ const API_URL = "http://localhost:3000";
 const quadroEl = document.querySelector(".kanban-board");
 const quadroTituloDropdown = document.querySelector(".dropdown-trigger p");
 const quadrosDropdown = document.querySelector(".dropdown-menu");
+const botaoEdicaoCliente = document.getElementById("btn-circle-check");
 
 function carregarHeader() {
     const headerHTML = `
@@ -513,6 +514,87 @@ async function popularSelectUsuarios() {
         });
     } catch (error) {
         console.error("Erro ao carregar usuários:", error);
+    }
+}
+
+async function editarCliente(cliente) {
+    try {
+        const token = localStorage.getItem("kanban_token");
+        const form = document.querySelector(".popup-form");
+        const idCliente = form.dataset.idCliente;
+
+        if (!idCliente) {
+            throw new Error("ID do cliente não encontrado");
+        }
+
+        const dadosCliente = {
+            nome_cliente: document.getElementById("input-nome").value,
+            cpf_cliente: document.getElementById("input-cpf").value,
+            email_cliente: document.getElementById("input-email").value,
+            telefone: document.getElementById("input-telefone").value,
+            anotacoes: document.getElementById("input-anotacoes").value,
+            id_usuario: document.querySelector(".select-responsavel").value,
+        };
+
+        const atualizarClienteResponse = await fetch(
+            `${API_URL}/clientes/${idCliente}`,
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dadosCliente),
+            }
+        );
+
+        if (!atualizarClienteResponse.ok) {
+            const errorData = await atualizarClienteResponse.json();
+            throw new Error(errorData.mensagem || errorData.erro);
+        }
+
+        const clienteAtualizado = await atualizarClienteResponse.json();
+
+        fecharPopup();
+        await atualizarCardNoQuadro(clienteAtualizado);
+
+        return clienteAtualizado;
+    } catch (error) {
+        console.error("Erro ao editar cliente:", error);
+    }
+}
+
+async function atualizarCardNoQuadro(clienteAtualizado) {
+    try {
+        const token = localStorage.getItem("kanban_token");
+
+        const usuarioResponse = await fetch(
+            `${API_URL}/usuarios/${clienteAtualizado.id_usuario}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (!usuarioResponse.ok) return;
+
+        const usuario = await usuarioResponse.json();
+
+        const cardExistente = document.querySelector(
+            `[data-id-cliente="${clienteAtualizado._id}"]`
+        );
+
+        if (cardExistente) {
+            const novoCard = criarCardEl(clienteAtualizado, usuario);
+            cardExistente.replaceWith(novoCard);
+
+            configurarDragDropCard(novoCard);
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar card no quadro:", error);
     }
 }
 
