@@ -216,6 +216,7 @@ async function popularQuadroNormal(quadro) {
 // Idealmente, utilizariamos o objeto dataTransfer, mas ele não é acessível no dragover: https://issues.chromium.org/issues/40617527
 
 let activeDragCardId = null;
+let colunaOriginalCard = null;
 
 // TODO: Integrar com endpoint de mudança de status
 function configurarDragDropCard(card) {
@@ -235,11 +236,16 @@ function configurarDragDropCard(card) {
 
         event.dataTransfer.setData("card-aluno", "");
         activeDragCardId = card.dataset.idCliente;
+        const cardListPai = card.closest(".card-list");
+        if (cardListPai && cardListPai.id) {
+            colunaOriginalCard = cardListPai.id.replace("lista-", "");
+        }
     });
 
     // Limpa ID armazenado após a ação de arrastar terminar
     card.addEventListener("dragend", () => {
         activeDragCardId = null;
+        colunaOriginalCard = null;
         card.classList.remove("dragging");
     });
 }
@@ -343,7 +349,7 @@ function configurarDragDropQuadro() {
         });
 
         // Insere card na área de drop (inserimos ele acima do placeholder e logo em seguida removemos o placeholder)
-        column.addEventListener("drop", (event) => {
+        column.addEventListener("drop", async (event) => {
             event.preventDefault();
 
             const draggedCard = document.querySelector(
@@ -351,13 +357,52 @@ function configurarDragDropQuadro() {
             );
 
             const dragPlaceholder = column.querySelector(".drag-placeholder");
-            if (!dragPlaceholder) return;
-            draggedCard.remove();
-            cardList = column.querySelector(".card-list");
-            cardList.insertBefore(draggedCard, dragPlaceholder);
-            dragPlaceholder.remove();
+            if (!dragPlaceholder || !draggedCard) return;
+
+            const cardList = column.querySelector(".card-list");
+            const novaColuna = cardList.id.replace("lista-", "");
+
+            const sucesso = await moverCard(draggedCard, novaColuna);
+
+            if (sucesso) {
+                draggedCard.remove();
+                cardList.insertBefore(draggedCard, dragPlaceholder);
+                dragPlaceholder.remove();
+            } else {
+                dragPlaceholder.remove();
+            }
         });
     });
+}
+
+async function moverCard(card, novaColuna) {
+    const token = localStorage.getItem("kanban_token");
+    const idCliente = card.dataset.idCliente;
+
+    try {
+        const moverResponse = await fetch(
+            `${API_URL}/clientes/mover/${idCliente}`,
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ colunaAtual: novaColuna }),
+            }
+        );
+
+        if (!moverResponse.ok) {
+            const dados = await moverResponse.json();
+            throw new Error(`Erro ao atualizar coluna: ${dados.mensagem}`);
+        }
+
+        await moverResponse.json();
+        return true;
+    } catch (error) {
+        console.error("Erro ao atualizar coluna do cliente:", error);
+        return false;
+    }
 }
 
 async function popularDropdownQuadros() {
