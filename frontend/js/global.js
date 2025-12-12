@@ -424,12 +424,24 @@ async function popularDropdownQuadros() {
     }
     const quadros = await quadroResponse.json();
 
+    quadrosDropdown.innerHTML =
+        '<a href="arquivados.html" class="dropdown-item">Arquivados</a>';
+
     for (const quadro of quadros) {
         quadrosDropdown.innerHTML += `<a href="quadro_principal.html" class="dropdown-item">${quadro.nome_quadro}</a>`;
     }
     // quadrosDropdown.appendChild(
     //     `<a href="arquivados.html" class="dropdown-item">Arquivados</a>`
     // );
+}
+
+async function carregar() {}
+
+function limparQuadro() {
+    const listas = document.querySelectorAll(".card-list");
+    listas.forEach((lista) => {
+        lista.innerHTML = "";
+    });
 }
 
 async function popularPopupCard(idCliente) {
@@ -472,12 +484,44 @@ async function popularPopupCard(idCliente) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+async function popularSelectUsuarios() {
+    try {
+        const token = localStorage.getItem("kanban_token");
+        const selectUsuario = document.querySelector(".select-responsavel");
+
+        if (!selectUsuario) return;
+
+        const usuariosResponse = await fetch(`${API_URL}/usuarios`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!usuariosResponse.ok) return;
+
+        const usuarios = await usuariosResponse.json();
+
+        usuarios.forEach((usuario) => {
+            const option = document.createElement("option");
+            option.value = usuario._id;
+            option.textContent = usuario.nome_usuario;
+            selectUsuario.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Erro ao carregar usuários:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("kanban_token");
     if (!token) {
         window.location.href = "tela-login.html";
         return;
     }
 
-    popularDropdownQuadros();
+    await popularDropdownQuadros();
+
+    await popularSelectUsuarios();
 });
