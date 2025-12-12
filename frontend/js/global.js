@@ -474,6 +474,8 @@ async function popularPopupCard(idCliente) {
             cliente.telefone || "";
         document.getElementById("input-anotacoes").value =
             cliente.anotacoes || "";
+        document.querySelector(".select-responsavel").value =
+            cliente.id_usuario;
 
         const form = document.querySelector(".popup-form");
         form.dataset.idCliente = idCliente;
