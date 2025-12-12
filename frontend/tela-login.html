@@ -1,85 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        body{
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #F5F6F5;
-            font-size: small;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: #f5f6f5;
+                font-size: small;
+            }
 
-        div{
-            background-color: #FFFFFF;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            padding: 38px;
-            width: 250px;
-            border-radius: 15px;
-            color: #1D201D;
-        }
-        input{
-            padding: 10px;
-            border: none;
-            outline: none;
-            font-size: 20px;
-        }
-        .continuar{
-            background-color: #497EEE;
-            border: none;
-            color: #FFFFFF;
-            padding: 15px;
-            width: 100%;
-            border-radius: 15px;
-            font-size: 20px;
-        }
-        header{
-            width: 100%;
-            background-color: #FFFFFF;
-            padding: 6px;
-            font-size: 8px;
-        }
-        .senha{
-            background-color: #FFFFFF;
-            border: none;
-        }
-        .cadastro{
-            background-color: #FFFFFF;
-            color: #2B302B;
-            border: none;
-            font-weight: bold;
-        }
-        pre{
-            font-family: Arial, Helvetica, sans-serif;
-        }
+            div {
+                background-color: #ffffff;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 38px;
+                width: 250px;
+                border-radius: 15px;
+                color: #1d201d;
+            }
+            input {
+                padding: 10px;
+                border: none;
+                outline: none;
+                font-size: 20px;
+            }
+            .continuar {
+                background-color: #497eee;
+                border: none;
+                color: #ffffff;
+                padding: 15px;
+                width: 100%;
+                border-radius: 15px;
+                font-size: 20px;
+                cursor: pointer;
+            }
+            header {
+                width: 100%;
+                background-color: #ffffff;
+                padding: 6px;
+                font-size: 8px;
+            }
+            .senha {
+                background-color: #ffffff;
+                border: none;
+            }
+            .cadastro {
+                background-color: #ffffff;
+                color: #2b302b;
+                border: none;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            pre {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>DDBB Cursos</h1>
+        </header>
+        <div class="login-wrapper">
+            <h1>Entrar</h1>
+            <p class="status"></p>
+            <input type="text" id="email" placeholder="E-Mail" />
+            <br /><br />
+            <input type="password" id="senha" placeholder="Senha" />
+            <br />
+            <label>
+                <input type="checkbox" id="lembrar" />Lembrar de mim
+            </label>
+            <button class="senha" onclick="esqueciSenha()">
+                Esqueci a senha
+            </button>
+            <br /><br />
+            <button class="continuar" id="login-button">Continuar</button>
+            <br />
+            <pre>         Ainda não têm uma conta?</pre>
+            <button class="cadastro">Cadastre-se</button>
+        </div>
 
-    </style>
-</head> 
-<body>
-    <header>
-        <h1>DDBB Cursos</h1>
-    </header>
-    <div>
-        <h1>Entrar</h1>
-        <input type="text" placeholder="E-Mail">
-        <br><br>
-        <input type="password" placeholder="Senha">
-        <br>
-        <label>
-            <input type="checkbox">Lembrar de mim
-        </label>
-        <button class="senha">Esqueci a senha</button>
-        <br><br>
-        <button class="continuar">Continuar</button>
-        <br>
-        <pre>         Ainda não têm uma conta?</pre>
-        <button class="cadastro">Cadastre-se</button>
-    </div>
-</body>
+        <script src="js/login.js"></script>
+    </body>
 </html>
