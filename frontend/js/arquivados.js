@@ -86,6 +86,74 @@ window.onclick = function (event) {
     }
 };
 
+async function desistirCliente(id, motivo, colunaAtual) {
+    try {
+        const token = localStorage.getItem("kanban_token");
+        
+        const bodyData = {
+            motivoDesistencia: motivo,
+            colunaAtual: colunaAtual
+        };
+
+        const response = await fetch(`${API_URL}/cliente/arquivar/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(bodyData)
+        });
+
+        if (!response.ok) {
+            const erro = await response.json();
+            throw new Error(erro.mensagem || "Erro ao arquivar cliente");
+        }
+
+        const dados = await response.json();
+        alert("Cliente movido para desistentes/arquivados com sucesso!");
+        
+        window.location.reload(); 
+        
+    } catch (error) {
+        console.error("Erro ao desistir:", error);
+        alert("Erro: " + error.message);
+    }
+}
+
+//Função para Matricular
+async function matricularCliente(id, colunaDeDestino) {
+    try {
+        const token = localStorage.getItem("kanban_token");
+        const bodyData = {
+            colunaDeOrigem: colunaDeDestino 
+        };
+
+        const response = await fetch(`${API_URL}/cliente/desarquivar/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(bodyData)
+        });
+
+        if (!response.ok) {
+            const erro = await response.json();
+            throw new Error(erro.mensagem || "Erro ao desarquivar cliente");
+        }
+
+        const dados = await response.json();
+        alert("Cliente matriculado/desarquivado com sucesso!");
+        
+        // Atualiza a tela
+        window.location.reload();
+
+    } catch (error) {
+        console.error("Erro ao matricular:", error);
+        alert("Erro: " + error.message);
+    }
+}
+
 async function popularQuadroArquivados() {
     try {
         const token = localStorage.getItem("kanban_token");
@@ -133,6 +201,34 @@ async function popularQuadroArquivados() {
     } catch (error) {
         console.error("Erro ao popular quadros:", error);
     }
+}
+
+//Botão para confirmar a DESISTÊNCIA (Arquivar)
+async function handleBotaoDesistir() {
+    if (!clienteSelecionadoId) return;
+
+    const motivoInput = document.getElementById("input-motivo").value;
+
+    if (!motivoInput) {
+        alert("Por favor, informe o motivo da desistência.");
+        return;
+    }
+
+    await desistirCliente(clienteSelecionadoId, motivoInput, clienteSelecionadoColuna);
+    
+    fecharPopup();
+}
+
+//Botão para confirmar a matícula
+async function handleBotaoMatricular() {
+    if (!clienteSelecionadoId) return;
+
+    // Define para qual coluna o card vai ao ser matriculado
+    const colunaDestino = "Matriculados"; 
+
+    await matricularCliente(clienteSelecionadoId, colunaDestino);
+    
+    fecharPopup();
 }
 
 document.addEventListener("DOMContentLoaded", popularQuadroArquivados);
