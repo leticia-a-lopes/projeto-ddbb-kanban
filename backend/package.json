@@ -20,21 +20,13 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
-<<<<<<< HEAD
     "nodemailer": "^7.0.11",
     "nodemon": "^3.1.11"
-=======
-    "nodemailer": "^7.0.11"
->>>>>>> e576cbf3aa3fa97ab123e44ee9611cc5754e0161
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
-<<<<<<< HEAD
     "@types/express": "^5.0.6",
-=======
-    "@types/express": "^5.0.5",
->>>>>>> e576cbf3aa3fa97ab123e44ee9611cc5754e0161
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.10.3",
