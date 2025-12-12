@@ -34,21 +34,6 @@ function filtrarLista(texto) {
     });
 }
 
-// --- NOVO QUADRO ---
-function abrirNovoQuadro() { 
-    popupNovoQuadro.classList.add('aberto'); 
-}
-
-function fecharNovoQuadro() { 
-    popupNovoQuadro.classList.remove('aberto'); 
-}
-
-function validarColunas(input) {
-    let val = parseInt(input.value);
-    if (val > 4) input.value = 4;
-    if (val < 1 && input.value !== "") input.value = 1;
-}
-
 // --- CONFIRMAÇÃO E EXCLUSÃO ---
 function abrirConfirmacao() { 
     document.getElementById('popupConfirmacao').classList.add('aberto'); 

@@ -103,7 +103,7 @@
                     <div class="header-line"></div>
                     <svg
                         class="column-action-icon"
-                        onclick="abrirCriar()"
+                        onclick="abrirCriarCard('contato')"
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
@@ -138,7 +138,7 @@
                     <div class="header-line"></div>
                     <svg
                         class="column-action-icon"
-                        onclick="abrirCriar()"
+                        onclick="abrirCriarCard('visita')"
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
@@ -170,7 +170,7 @@
                     <div class="header-line"></div>
                     <svg
                         class="column-action-icon"
-                        onclick="abrirCriar()"
+                        onclick="abrirCriarCard('atendimento')"
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
@@ -205,7 +205,7 @@
                     <div class="header-line"></div>
                     <svg
                         class="column-action-icon"
-                        onclick="abrirCriar()"
+                        onclick="abrirCriarCard('aula')"
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
@@ -239,7 +239,7 @@
                     <div id="container-dados">
                         <div class="form-row">
                             <div class="input-group">
-                                <label>Nome Completo</label>
+                                <label>Nome Completo *</label>
                                 <input
                                     type="text"
                                     id="input-nome"
@@ -247,7 +247,7 @@
                                 />
                             </div>
                             <div class="input-group small-group">
-                                <label>CPF</label>
+                                <label>CPF *</label>
                                 <input
                                     type="text"
                                     id="input-cpf"
@@ -257,7 +257,7 @@
                         </div>
                         <div class="form-row">
                             <div class="input-group">
-                                <label>E-mail</label>
+                                <label>E-mail *</label>
                                 <input
                                     type="email"
                                     id="input-email"
@@ -268,7 +268,7 @@
                                 <label>Telefone</label>
                                 <input
                                     type="tel"
-                                    id="input-tel"
+                                    id="input-telefone"
                                     class="input-field"
                                 />
                             </div>
@@ -507,7 +507,7 @@
                             <button
                                 type="button"
                                 class="btn-pill btn-criar"
-                                onclick="fecharPopup()"
+                                onclick="criarCard()"
                             >
                                 Criar Card
                             </button>
