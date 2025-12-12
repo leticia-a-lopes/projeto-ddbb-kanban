@@ -102,10 +102,29 @@ async function criarCard() {
             return false;
         }
 
-        console.log(clienteResponse);
-        const novoCard = await clienteResponse.json();
-        console.log(novoCard);
-        const cardEl = criarCardEl(novoCard, usuario);
+        const novoCliente = await clienteResponse.json();
+
+        const usuarioResponse = await fetch(
+            `${API_URL}/usuarios/${novoCliente.id_usuario}/`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (!usuarioResponse.ok) {
+            const dados = await usuarioResponse.json();
+            throw new Error(
+                `Erro HTTP ao fazer fetch de usuario! status: ${dados}`
+            );
+        }
+
+        const usuario = await usuarioResponse.json();
+
+        const cardEl = criarCardEl(novoCliente, usuario);
         const listaCards = document.getElementById(
             "lista-" + popup.dataset.coluna
         );
@@ -219,3 +238,42 @@ window.onclick = function (event) {
         document.getElementById("filterMenu").style.display = "none";
     }
 };
+
+async function carregarQuadroPrincipal() {
+    try {
+        const token = localStorage.getItem("kanban_token");
+
+        const quadroResponse = await fetch(`${API_URL}/quadros`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!quadroResponse.ok) {
+            const dados = await quadroResponse.json();
+            throw new Error(
+                `Erro HTTP ao fazer fetch de quadros! status: ${dados}`
+            );
+        }
+        const quadros = await quadroResponse.json();
+        const quadroPrincipal = quadros.find((quadro) => {
+            const quadroNome = quadro.nome_quadro
+                .replaceAll(" ", "")
+                .toLowerCase();
+
+            return quadroNome === "quadroprincipal";
+        });
+
+        if (quadroPrincipal) {
+            await popularQuadroNormal(quadroPrincipal);
+        } else {
+            await popularQuadroNormal(quadros[0]);
+        }
+    } catch (error) {
+        console.error("Erro ao carregar quadro principal:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", carregarQuadroPrincipal);
