@@ -200,6 +200,7 @@ function adicionarDragDrop() {
             const dragPlaceholder = column.querySelector(".drag-placeholder");
             if (!dragPlaceholder) return;
             draggedCard.remove();
+            column.children[1].insertBefore(draggedCard, dragPlaceholder);
             cardList = column.querySelector(".card-list");
             cardList.insertBefore(draggedCard, dragPlaceholder);
             dragPlaceholder.remove();
@@ -289,4 +290,5 @@ function moveDragPlaceholder(event) {
     );
 }
 
-document.addEventListener("DOMContentLoaded", popularQuadros());
+// correção: removido o parenteses para não executar a função imediatamente apenas passar a referência
+document.addEventListener("DOMContentLoaded", popularQuadros);
