@@ -1,6 +1,5 @@
 import { Board } from "./schemas.js";
 import { Request } from "express";
-import { AuthRequest } from "../middleware/auth.js";
 
 export const insertQuadro = async (nome: string, colunas: number) => {
   const quadro = await Board.create({
@@ -9,21 +8,7 @@ export const insertQuadro = async (nome: string, colunas: number) => {
   }).catch((err) => {
     console.log("Nao foi possivel criar um novo quadro: " + err);
   });
-};
-
-export const updateQuadro = async (id: String, req: AuthRequest) => {
-  const { nome_quadro, newColunaRender } = req.body;
-  const updatedQuadro = await Board.findByIdAndUpdate(
-    id,
-    { nome: nome_quadro, colunasRender: newColunaRender },
-    { runValidators: true }
-  )
-    .then(() => {
-      console.log("Quadro atualizado com sucesso");
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel atualizar o quadro: " + err);
-    });
+  return quadro;
 };
 
 export const readQuadro = async (quadroId: String) => {
@@ -36,7 +21,7 @@ export const readQuadro = async (quadroId: String) => {
 
 export const readAllQuadros = async () => {
   const quadros = await Board.find().catch((err) => {
-    console.log("Nao foi possivel fazer a busca dos quadros");
+    console.log("Nao foi possivel fazer a busca dos quadros" + err);
   });
 
   return quadros;

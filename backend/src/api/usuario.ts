@@ -58,14 +58,10 @@ router.post("/login", async (req, res) => {
 // [verificarToken, verificarAdmin] antes da função para verificar se de fato é admin
 router.post(
   "/",
-  [verificarToken, verificarAdmin],
+  // [verificarToken, verificarAdmin],
   async (req: AuthRequest, res: any) => {
     try {
-      const {
-        email_usuario,
-        isAdmin,
-        tokenRecuperacao,
-      } = req.body;
+      const { email_usuario, isAdmin, tokenRecuperacao } = req.body;
 
       //Gera senha aleatória
       const senhaAleatoria = crypto.randomBytes(4).toString("hex");
@@ -78,7 +74,7 @@ router.post(
       req.body.tokenRecuperacao = tokenRecuperacao;
       req.body.isAdmin = isAdmin || false;
 
-      const usuarioCriado = await insertUser(req.body);
+      const usuarioCriado = await insertUser(req);
 
       //Envia a senha original (aleatória) por email para o usuário saber qual é
       await enviarEmail(
@@ -112,7 +108,7 @@ router.get("/:id", async (req, res) => {
 
 //Atualizar alguma informação
 router.put("/:id", async (req, res) => {
-  const atualizado = await updateUser(req.body, req.params.id);
+  const atualizado = await updateUser(req, req.params.id);
   res.json(atualizado);
 });
 

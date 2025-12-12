@@ -12,44 +12,41 @@ export const insertUser = async (req: Request) => {
     telefone,
     tokenRecuperacao,
   } = req.body;
-  await User.create(
-    nome_usuario,
-    email_usuario,
-    senha,
-    isAdmin,
-    corlcone,
-    telefone,
-    tokenRecuperacao
-  )
-    .then(() => {
-      console.log("Usuario inserido com sucesso");
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel inserir o usuario " + err);
+
+  try {
+    const newUser = await User.create({
+      nome_usuario,
+      email_usuario,
+      senha,
+      isAdmin,
+      corlcone,
+      telefone,
+      tokenRecuperacao,
     });
+
+    return newUser;
+  } catch (err) {
+    console.log("Nao foi possivel criar o usuario " + err);
+  }
 };
 
 //Read user
 export const readUser = async (id: String) => {
-  const userInfo = await User.findById(id)
-    .then(() => {
-      console.log(JSON.stringify(userInfo));
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel realizar a busca");
-    });
+  const userInfo = await User.findById(id).catch((err) => {
+    console.log("Nao foi possivel realizar a busca");
+  });
 
   return userInfo;
 };
 
 //Recuperar token
 
-export const saveRecoveryToken = async (id: String) => {
-  const token = User.find(id, "tokenRecuperacao").catch((err) => {
+export const saveRecoveryToken = async (id: String, token: String) => {
+  const tokenInserido = User.find(id, "tokenRecuperacao").catch((err) => {
     console.log("Nao foi possivel fazer a busca do token");
   });
 
-  return token;
+  return tokenInserido;
 };
 
 //Listar todos os usuarios
@@ -61,15 +58,19 @@ export const readAllUsers = async () => {
 };
 
 export const findUserByEmail = async (email: String) => {
-  const user = await User.find({ email_usuario: "email" })
-    .then(() => {
-      console.log(JSON.stringify(user));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  try {
+    const user = await User.findOne({ email_usuario: email }).select("+senha");
 
-  return user;
+    if (user) {
+      console.log("Usuário encontrado no banco.");
+    }
+    return user;
+  } catch (err: any) {
+    console.error(
+      "Nao foi possivel buscar o usuario por email: " + err.message
+    );
+    throw new Error("Falha na busca do usuário.");
+  }
 };
 
 //Update user

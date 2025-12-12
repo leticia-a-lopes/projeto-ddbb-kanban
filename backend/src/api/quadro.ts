@@ -4,7 +4,6 @@ import {
   insertQuadro,
   readQuadro,
   readAllQuadros,
-  updateQuadro,
   deleteQuadro,
 } from "../database/CRUDboard.js";
 import {
@@ -84,16 +83,6 @@ router.get("/:id", verificarToken, async (req, res) => {
   }
   res.json(quadro);
 });
-
-//Editar estrutura/nome do quadro (admin apenas)
-router.put(
-  "/:id",
-  [verificarToken, verificarAdmin],
-  async (req: AuthRequest, res: any) => {
-    const updated = await updateQuadro(req.params.id!, req);
-    res.json(updated);
-  }
-);
 
 //Deletar Quadro (admin apenas)
 router.delete(
