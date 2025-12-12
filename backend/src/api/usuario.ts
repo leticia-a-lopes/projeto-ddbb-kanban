@@ -52,6 +52,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ erro: error });
+    console.log(error);
   }
 });
 
@@ -66,13 +67,14 @@ router.post("/primeiro-admin", async (req, res) => {
     const novoUsuarioDados = {
       nome_usuario,
       email_usuario,
-      senha: senhaHash,
+      senha: senhaHash, // <-- AGORA ESTA SENHA SERÁ USADA
       telefone,
-      // corlcone,
-      isAdmin: true, // Garante que seja Admin
+      // corlcone, // Adicione aqui se for obrigatório no Schema
+      isAdmin: true, 
     };
 
-    const usuarioCriado = await insertAdmin(req); 
+    // CORREÇÃO: Passa o objeto de dados gerado, não o 'req'
+    const usuarioCriado = await insertAdmin(novoUsuarioDados);
 
     await enviarEmail(
       email_usuario,

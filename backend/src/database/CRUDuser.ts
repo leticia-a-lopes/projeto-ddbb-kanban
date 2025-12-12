@@ -32,32 +32,18 @@ export const insertUser = async (req: Request) => {
 };
 
 //Insert Admin
-export const insertAdmin = async (req: Request) => {
-  const {
-    nome_usuario,
-    email_usuario,
-    senha,
-    corlcone,
-    telefone,
-    tokenRecuperacao,
-  } = req.body;
+export const insertAdmin = async (dadosUsuario: any) => { 
+    try {
+        // CORREÇÃO: Passa o objeto completo para o Mongoose
+        const newUser = await User.create(dadosUsuario); 
+        
+        console.log("Administrador inserido com sucesso");
+        return newUser;
 
-  try {
-    const newUser = await User.create({
-      nome_usuario,
-      email_usuario,
-      senha,
-      isAdmin: true,
-      corlcone,
-      telefone,
-      tokenRecuperacao,
-    });
-
-    return newUser;
-  } catch (err) {
-    console.error(err)
-    throw err
-  }
+    } catch (err: any) {
+        console.error("Nao foi possivel inserir o Administrador: " + err.message);
+        throw new Error(err.message || "Falha na inserção do usuário no banco.");
+    }
 };
 
 //Read user
