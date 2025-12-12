@@ -12,48 +12,40 @@ export const insertClient = async (req: Request) => {
     anotacoes,
     colunaAtual,
     idQuadro,
-    agendamento = {},
-    estaArquivado,
-    motivoDesistencia = {},
-    colunaDeOrigem,
-    dataArquivamento = {},
+    agendamento,
   } = req.body;
 
-  await Client.create({
-    nome_cliente,
-    telefone,
-    email_cliente,
-    cpf_cliente,
-    status,
-    id_usuario,
-    anotacoes,
-    colunaAtual,
-    idQuadro,
-    agendamento,
-    estaArquivado,
-    motivoDesistencia,
-    colunaDeOrigem,
-    dataArquivamento,
-  })
-    .then(() => {
-      console.log("Cliente inserido com sucesso");
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel inserir o cliente " + err);
+  try {
+    const novo = await Client.create({
+      nome_cliente,
+      telefone,
+      email_cliente,
+      cpf_cliente,
+      status,
+      id_usuario,
+      anotacoes,
+      colunaAtual,
+      idQuadro,
+      agendamento,
+      estaArquivado: false,
+      motivoDesistencia: null,
+      colunaDeOrigem: null,
+      dataArquivamento: null,
     });
+    return novo;
+  } catch (err) {
+    console.log("Nao foi possivel criar um novo cliente " + err);
+  }
 };
 
 //Read Client
 export const readClient = async (id: String) => {
-  const clientInfo = await Client.findById(id)
-    .then(() => {
-      console.log(JSON.stringify(clientInfo));
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel realizar a busca");
-    });
-
-  return clientInfo;
+  try {
+    const clientInfo = await Client.findById(id);
+    return clientInfo;
+  } catch (err) {
+    console.log("Nao foi possivel buscar o cliente, verifique o id");
+  }
 };
 
 //Listar todos os clientes
@@ -66,40 +58,39 @@ export const readAllClients = async () => {
 
 //Listar todos os clientes de um usuario
 export const readAllClientsByUserId = async (userId: string) => {
-  const clientsByUser = await Client.find({ id_usuario: userId })
-    .then(() => {
-      console.log(JSON.stringify(clientsByUser));
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel realizar a busca");
-    });
-  return clientsByUser;
+  try {
+    const clientsByUser = await Client.find({ id_usuario: userId });
+    return clientsByUser;
+  } catch (err) {
+    console.log(
+      "Nao foi possive listar todos os clientes, verifique o id do usuario " +
+        err
+    );
+  }
 };
 
 //Listar todos os clientes de um quadro
 
 export const readClientsByQuadro = async (id_quadro: String) => {
-  const clients = await Client.find({ idQuadro: id_quadro })
-    .then(() => {
-      console.log(JSON.stringify(clients));
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel fazer a busca " + err);
-    });
-
-  return clients;
+  try {
+    const clients = await Client.find({ idQuadro: id_quadro });
+    return clients;
+  } catch (err) {
+    console.log(
+      "Nao foi possive listar todos os clientes, verifique o id do quadro " +
+        err
+    );
+  }
 };
 
 //Listar todos os clientes arquivados
 
 export const readArchivedClients = async () => {
-  const archivedClients = await Client.find({ estaArquivado: true })
-    .then(() => {
-      console.log(JSON.stringify(archivedClients));
-    })
-    .catch((err) => {
+  const archivedClients = await Client.find({ estaArquivado: true }).catch(
+    (err) => {
       console.log("Nao foi possivel buscar os clientes arquivados: " + err);
-    });
+    }
+  );
 
   return archivedClients;
 };
@@ -107,13 +98,11 @@ export const readArchivedClients = async () => {
 //Listar todos os clientes nao arquivados
 
 export const unarchivedClients = async () => {
-  const unarchivedClients = await Client.find({ estaArquivado: false })
-    .then(() => {
-      console.log(JSON.stringify(unarchivedClients));
-    })
-    .catch((err) => {
+  const unarchivedClients = await Client.find({ estaArquivado: false }).catch(
+    (err) => {
       console.log("Nao foi possivel buscar os clientes nao arquivados: " + err);
-    });
+    }
+  );
 
   return unarchivedClients;
 };
@@ -157,32 +146,6 @@ export const desarquivarClientes = async (
   }
 };
 
-//Verificação de Duplicidade (verifica se um cliente já existe)
-export const checkClientDuplicity = async (data: {
-  telefone?: string;
-  email_cliente?: string;
-  cpf_cliente?: string;
-}) => {
-  //Cria um array de condições para buscar qualquer um dos campos fornecidos
-  const query = { $or: [] as any[] };
-
-  //Adiciona condições apenas se o valor estiver presente na requisição
-  if (data.telefone) query.$or.push({ telefone: data.telefone });
-  if (data.email_cliente) query.$or.push({ email_cliente: data.email_cliente });
-  if (data.cpf_cliente) query.$or.push({ cpf_cliente: data.cpf_cliente });
-
-  if (query.$or.length === 0) return null;
-
-  try {
-    //Busca o primeiro cliente que casar com qualquer uma das condições
-    const clienteDuplicado = await Client.findOne(query);
-    return clienteDuplicado;
-  } catch (err: any) {
-    console.error("Erro na busca de duplicidade: " + err.message);
-    throw new Error("Falha ao buscar duplicidade no banco de dados.");
-  }
-};
-
 //Update client
 export const updateClient = async (req: Request, id: string) => {
   const {
@@ -206,7 +169,7 @@ export const updateClient = async (req: Request, id: string) => {
       id_usuario,
       anotacoes,
     },
-    { runValidators: true }
+    { runValidators: true, returnDocument:"after"}
   ).catch((err) => {
     console.log("Nao foi possivel atualizar os dados do cliente " + err);
   });
@@ -220,13 +183,11 @@ export const updateClientColumn = async (id: String, column: String) => {
     id,
     { colunaAtual: column },
     { runValidators: true, returnDocument: "after" }
-  )
-    .then(() => {
-      console.log(JSON.stringify(updatedUser));
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel alterar a coluna do usuario: " + err);
-    });
+  ).catch((err) => {
+    console.log("Nao foi possivel alterar a coluna do usuario: " + err);
+  });
+
+  return updatedUser;
 };
 
 //Update responsavel pelo cliente
@@ -239,13 +200,11 @@ export const updateClientResponsible = async (
     id,
     { id_usuario: newResponsible },
     { runValidators: true, returnDocument: "after" }
-  )
-    .then(() => {
-      console.log(JSON.stringify(updatedUser));
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel atualizar o responsavel: " + err);
-    });
+  ).catch((err) => {
+    console.log("Nao foi possivel atualizar o responsavel: " + err);
+  });
+
+  return updatedUser;
 };
 
 //Adicionar data de agendamento
@@ -267,13 +226,10 @@ export const adicionarAgendamento = async (
       runValidators: true,
       returnDocument: "after",
     }
-  )
-    .then(() => {
-      console.log("Agendado com sucesso!");
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel realizar o agendamento");
-    });
+  ).catch((err) => {
+    console.log("Nao foi possivel realizar o agendamento");
+  });
+  return updatedAgendamento;
 };
 
 //Arquivar um cliente
@@ -283,13 +239,11 @@ export const archiveClient = async (id: String) => {
     id,
     { estaArquivado: true },
     { runValidators: true, returnDocument: "after" }
-  )
-    .then(() => {
-      console.log(updatedUser);
-    })
-    .catch((err) => {
-      console.log("Nao foi possivel arquivar o cliente: " + err);
-    });
+  ).catch((err) => {
+    console.log("Nao foi possivel arquivar o cliente: " + err);
+  });
+
+  return updatedUser;
 };
 
 //Delete client
@@ -297,4 +251,5 @@ export const deleteClient = async (id: string) => {
   const deletedClient = await Client.findByIdAndDelete(id).catch((err) => {
     console.log("Nao foi possivel deletar o cliente");
   });
+  return deletedClient;
 };

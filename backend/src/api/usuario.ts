@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"; // Importante para criptografia
 import jwt from "jsonwebtoken";
 import {
   insertUser,
+  insertAdmin,
   readAllUsers,
   readUser,
   updateUser,
@@ -45,12 +46,51 @@ router.post("/login", async (req, res) => {
     );
 
     res.json({
-      mensagem: "Login realizado!",
-      token,
-      usuario: { nome: user.nome_usuario, isAdmin: user.isAdmin },
-    });
+            mensagem: "Login realizado!",
+            token,
+            usuario: {
+                id: user._id, // AQUI
+                nome: user.nome_usuario,
+                isAdmin: user.isAdmin,
+            },
+        });
   } catch (error) {
     res.status(500).json({ erro: error });
+    console.log(error);
+  }
+});
+
+router.post("/primeiro-admin", async (req, res) => {
+  const { nome_usuario, email_usuario, telefone } = req.body;
+  
+  try {
+    const senhaAleatoria = crypto.randomBytes(8).toString("hex");
+    const salt = await bcrypt.genSalt(10);
+    const senhaHash = await bcrypt.hash(senhaAleatoria, salt);
+
+    const novoUsuarioDados = {
+      nome_usuario,
+      email_usuario,
+      senha: senhaHash,
+      telefone,
+      // corlcone,
+      isAdmin: true, 
+    };
+
+    // CORREÇÃO: Passa o objeto de dados gerado, não o 'req'
+    const usuarioCriado = await insertAdmin(novoUsuarioDados);
+
+    await enviarEmail(
+      email_usuario,
+      "Bem-vindo ao Kanban - Acesso Inicial",
+      `Sua senha provisória para o primeiro acesso é: ${senhaAleatoria}`
+    );
+
+    res.status(201).json({ mensagem: "Administrador inicial criado com sucesso!" });
+
+  } catch (err: any) {
+    // Erro 400 geralmente é de violação de unique (email/nome já existem)
+    res.status(400).json({ erro: "Falha ao criar Admin: " + err.message });
   }
 });
 
@@ -61,11 +101,7 @@ router.post(
   [verificarToken, verificarAdmin],
   async (req: AuthRequest, res: any) => {
     try {
-      const {
-        email_usuario,
-        isAdmin,
-        tokenRecuperacao,
-      } = req.body;
+      const { email_usuario, isAdmin, tokenRecuperacao } = req.body;
 
       //Gera senha aleatória
       const senhaAleatoria = crypto.randomBytes(4).toString("hex");
@@ -78,7 +114,7 @@ router.post(
       req.body.tokenRecuperacao = tokenRecuperacao;
       req.body.isAdmin = isAdmin || false;
 
-      const usuarioCriado = await insertUser(req.body);
+      const usuarioCriado = await insertUser(req);
 
       //Envia a senha original (aleatória) por email para o usuário saber qual é
       await enviarEmail(
@@ -112,7 +148,7 @@ router.get("/:id", async (req, res) => {
 
 //Atualizar alguma informação
 router.put("/:id", async (req, res) => {
-  const atualizado = await updateUser(req.body, req.params.id);
+  const atualizado = await updateUser(req, req.params.id);
   res.json(atualizado);
 });
 
