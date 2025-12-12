@@ -84,7 +84,7 @@ function criarCardEl(cliente, usuario) {
     const card = document.createElement("div");
     card.className = "card-aluno";
     card.dataset.idCliente = cliente._id;
-    card.addEventListener("click", () => abrirEditar(false));
+    card.addEventListener("click", () => popularPopupCard(cliente._id));
 
     const iconeUsuario = criarIconeUsuario(usuario);
 
@@ -430,6 +430,46 @@ async function popularDropdownQuadros() {
     // quadrosDropdown.appendChild(
     //     `<a href="arquivados.html" class="dropdown-item">Arquivados</a>`
     // );
+}
+
+async function popularPopupCard(idCliente) {
+    try {
+        const token = localStorage.getItem("kanban_token");
+
+        const clienteResponse = await fetch(
+            `${API_URL}/clientes/${idCliente}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (!clienteResponse.ok) {
+            throw new Error("Erro ao buscar dados do cliente");
+        }
+
+        const cliente = await clienteResponse.json();
+
+        document.getElementById("input-nome").value =
+            cliente.nome_cliente || "";
+        document.getElementById("input-cpf").value = cliente.cpf_cliente || "";
+        document.getElementById("input-email").value =
+            cliente.email_cliente || "";
+        document.getElementById("input-telefone").value =
+            cliente.telefone || "";
+        document.getElementById("input-anotacoes").value =
+            cliente.anotacoes || "";
+
+        const form = document.querySelector(".popup-form");
+        form.dataset.idCliente = idCliente;
+
+        abrirEditar(false);
+    } catch (error) {
+        console.error("Erro ao popular popup do card:", error);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
