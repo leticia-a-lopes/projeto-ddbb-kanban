@@ -46,26 +46,7 @@
                 </header>
 
                 <div class="card-list" id="lista-matriculados">
-                    <div class="card-aluno" onclick="abrirArquivado()">
-                        <div class="card-header">
-                            <svg class="card-icon" width="26" height="26" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <circle cx="19" cy="12" r="1"></circle>
-                                <circle cx="5" cy="12" r="1"></circle>
-                            </svg>
-                            <div class="name-icon-row">
-                                <span class="card-nome">Ana Julia Oliveira</span>
-                                <div class="card-user-icon bg-roxo" data-tooltip="João Pedro">
-                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                                            fill="currentColor" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <button class="btn-veja-mais" onclick="abrirVejaMais('Matriculados')">Veja mais</button>
             </section>
@@ -77,26 +58,7 @@
                 </header>
 
                 <div class="card-list" id="lista-desistentes">
-                    <div class="card-aluno" onclick="abrirArquivado()">
-                        <div class="card-header">
-                            <svg class="card-icon" width="26" height="26" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <circle cx="19" cy="12" r="1"></circle>
-                                <circle cx="5" cy="12" r="1"></circle>
-                            </svg>
-                            <div class="name-icon-row">
-                                <span class="card-nome">João Lucas da Silva</span>
-                                <div class="card-user-icon bg-amarelo" data-tooltip="Ana Silva">
-                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                                            fill="currentColor" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <button class="btn-veja-mais" onclick="abrirVejaMais('Desistentes')">Veja mais</button>
             </section>
@@ -207,17 +169,15 @@
         <div class="popup-overlay" id="popupNovoQuadro">
             <div class="popup-box popup-compacto" style="padding: 30px;">
                 <h2 style="font-size: 18px; color: var(--preto-texto); margin-bottom: 25px;">Novo Quadro</h2>
-                <form class="popup-form" style="display: flex; gap: 15px; align-items: flex-end;">
+
+                <form class="popup-form" style="display: flex; gap: 15px; align-items: flex-end;"
+                    onsubmit="event.preventDefault(); criarQuadro();">
                     <div class="input-group" style="flex: 2;">
-                        <label>Nome</label>
-                        <input type="text" class="input-field" placeholder="Tarefas">
+                        <label>Nome do Quadro</label>
+                        <input type="text" id="nome-novo-quadro" class="input-field" required>
                     </div>
-                    <div class="input-group" style="flex: 1;">
-                        <label>Colunas</label>
-                        <input type="number" class="input-field" value="3" min="1" max="4"
-                            oninput="validarColunas(this)">
-                    </div>
-                    <button type="button" class="btn-circle-check" onclick="fecharNovoQuadro()"
+
+                    <button type="submit" class="btn-circle-check" onclick="fecharNovoQuadro()"
                         style="margin-bottom: 2px;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"
                             stroke-linecap="round" stroke-linejoin="round">
