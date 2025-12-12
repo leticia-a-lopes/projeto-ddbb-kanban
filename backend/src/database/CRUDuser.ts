@@ -26,7 +26,8 @@ export const insertUser = async (req: Request) => {
 
     return newUser;
   } catch (err) {
-    console.log("Nao foi possivel criar o usuario " + err);
+    console.error(err)
+    throw err
   }
 };
 
