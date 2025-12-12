@@ -22,7 +22,7 @@ A cada login, o usuário receberá um token no email cadastrado, que será utili
 No momento de criação de um novo usuário, receberá também no email cadastrado uma senha, utilizada para fazer o login.
 Será necessário, para criar um novo quadro, que o usuário esteja logado no sistema
 
-##Como usar na máquina
+## Como usar na máquina
 
 ---
 Baixe o node.js no link: https://nodejs.org/en/download, logo após a instalação, execute no terminal o seguinte comando: npm install typescript.
